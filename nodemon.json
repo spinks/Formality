@@ -1,0 +1,6 @@
+{
+    "ignore": [
+        "events.json",
+        "app.test.js"
+    ]
+}

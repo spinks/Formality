@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="images/favicon.ico">
+
+    <title>Formality</title>
+
+    <meta name="google-signin-scope" content="profile email">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id"
+        content="1023133580648-i8rj0um1f2meigi0efb0pmp3ma3f2ksd.apps.googleusercontent.com">
+
+    <script src="scripts/index.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="css/style.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-light fixed-top">
+        <ul class="nav navbar-nav">
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    id="nav-college-name">
+                    College
+                </a>
+                <a class="dropdown-menu" id="navbarDropdownMenuCollege">
+                    <!-- this is build in index.js via get request -->
+                </a>
+            </div>
+        </ul>
+        <a class="navbar-brand mx-auto" href="#" , id="navbarBrand">Formality.</a>
+        <ul class="nav navbar-nav ml-auto">
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="nav-account" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Sign In </a>
+                <a class="dropdown-menu dropdown-menu-right">
+                    <form class="px-4 py-0">
+                        <div class="div py-2">
+                            <div class="g-signin2" data-width="inherit" data-onsuccess="onSignIn" id="google-signin">
+                            </div>
+                        </div>
+                        <div class="div py-2">
+                            <button type="submit" id='google-signout' class="btn btn-primary btn-block">sign
+                                out</button>
+                        </div>
+                    </form>
+                    <!-- <div class="form-group">
+                            <input type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="exampleDropdownFormPassword1"
+                                placeholder="password">
+                        </div>
+                        <button type="submit" id="account_submit" class="btn btn-primary btn-block">sign in</button>
+                        <div class="dropdown-divider"></div>
+                        <button type="submit" id="account_create" class="btn btn-secondary btn-block">create an
+                            account</button> -->
+                </a>
+            </div>
+        </ul>
+    </nav>
+
+    <main role="main" class="container">
+        <div id="content">
+            <div class="body-padded">
+                <p class="lead">Essential Formal and Ball Signup</p>
+                <p>Choose a college and sign in to get started</p>
+
+                <!-- <img src="images/bg.jpeg" class="figure-image img-fluid" alt="Background"> -->
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>
