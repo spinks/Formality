@@ -14,14 +14,20 @@ body {
   }
 
 .navbar {
-    border-bottom: 4px solid #81D8D0; 
-    padding-bottom: 5px;
+    /* border-bottom: 4px solid #81D8D0;  */
+    /* padding-bottom: 5px; */
+    border-top: 5px solid #81D8D0; 
+    padding-top: 5px;
     background: #ffffff;
   }
 
 .dropdown-menu {
     min-width:300px;
-    margin-top: 10px;
+    /* margin-top: 10px; */
+}
+
+.dropdown-toggle {
+  cursor: pointer;
 }
 
 .dropdown-item {
@@ -74,6 +80,16 @@ body {
 .form-control {
   border-radius: 0 !important;
 }
+
+.my-form-search, .my-form-search:focus {
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-color: #ced4da !important;
+  caret-color: #81D8D0;
+  
+}
+
 .form-control:focus {
   border-color: #9BE8DF;
   box-shadow: none;
@@ -83,9 +99,7 @@ body {
   font-family: 'Times New Roman', Times, serif;
   font-variant: small-caps;
   font-size: x-large;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  cursor: pointer;
 }
 
 .table > thead > tr > th{
@@ -101,4 +115,12 @@ th[scope="col"] {
 th[scope="row"] {
   /* font-style: italic; */
   font-weight: normal;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
 }

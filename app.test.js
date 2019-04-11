@@ -11,7 +11,7 @@ describe('Test getting list of colleges', () => {
         return request(app)
             .get('/college')
             .expect(200);
-    })
+    });
 
     it('Get /college succeeds and is correct', () => {
         return request(app)
@@ -19,7 +19,7 @@ describe('Test getting list of colleges', () => {
             .expect(200)
             .expect('Content-type', /json/)
             .expect(/Hatfield/);
-    })
+    });
 });
 
 function checkHatfield(res) {
@@ -32,8 +32,8 @@ function checkHatfield(res) {
         throw new Error('college name should be Hatfield');
     }
 
-    if (typeof content['number_events'] !== 'number') {
-        throw new Error('response should contain number of events');
+    if (typeof content['number_events'] !== 'object') {
+        throw new Error('response should contain event id array');
     }
 }
 

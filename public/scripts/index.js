@@ -1,7 +1,6 @@
-var clientIDToken = null;
 var lastPageRequest = 'home';
 var lastPageRequestCollege = null;
-var gapi;
+var lastPageRequestCollegeEvents = null;
 
 document.addEventListener('DOMContentLoaded', function () {
     async function buildDropMenu() {
@@ -14,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
             body = await JSON.parse(body);
             let dropmenu = '';
             for (let key in body) {
-                dropmenu += '<div class="dropdown-item" id="' + key + '">' + body[key] + '</div>'
+                dropmenu += '<div class="dropdown-item" id="' + key + '">' + body[key] + '</div>';
             }
             document.getElementById('navbarDropdownMenuCollege').innerHTML = dropmenu;
         } catch (e) {
@@ -26,11 +25,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('navbarDropdownMenuCollege').addEventListener('click', async function (event) {
         if (event.target.id !== 'navbarDropdownMenuCollege') {
-            await genTable(event.target.id);
+            lastPageRequest = 'college';
+            lastPageRequestCollege = event.target.id;
+            await genFullTable(event.target.id);
         }
     });
 
-    document.getElementById('navbarBrand').addEventListener('click', async function (event) {
+    document.getElementById('navbarBrand').addEventListener('click', async function () {
         try {
             lastPageRequest = 'home';
             let response = await fetch('/home');
@@ -47,75 +48,277 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('google-signout').addEventListener('click', async function (event) {
+    document.getElementById('google-signout').addEventListener('click', async function () {
         await signOut();
     });
 });
 
 async function signOut() {
     try {
-        var auth2 = gapi.auth2.getAuthInstance();
-        await fetch('gtokenout', {
-            method: 'POST',
-            mode: 'cors',
-            cache: 'no-cache',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: 'follow',
-            referrer: 'no-referrer',
-            body: '',
-        });
+        var auth2 = gapi.auth2.getAuthInstance(); // eslint-disable-line
+        var response = await fetch('gtokenout', { method: 'POST' });
+        if (response.status != 200) {
+            var body = await response.text();
+            throw body;
+        }
         auth2.signOut();
-        clientIDToken = null;
         document.getElementById('nav-account').innerHTML = 'Sign In ';
-
         // refresh page content to reflect sign out
         if (lastPageRequest !== 'home') {
-            await genTable(lastPageRequestCollege);
+            await genTable(lastPageRequestCollege, lastPageRequestCollegeEvents);
         }
     } catch (e) {
         alert(e);
     }
 }
 
-async function genTable(college) {
+// function tableFilter() {
+//     var filter = document.getElementById("tableSearch").value.toUpperCase();
+//     var table = document.getElementById("eventTable");
+//     var tr = table.getElementsByTagName("tr");
+//     for (i = 1; i < tr.length; i++) {
+//         th = tr[i].getElementsByTagName("th")[0].innerText;
+//         if (th) {
+//             if (th.toUpperCase().indexOf(filter) > -1) {
+//                 tr[i].style.display = "";
+//             } else {
+//                 tr[i].style.display = "none";
+//             }
+//         }
+//     }
+// }
+
+async function tableFilter() { // eslint-disable-line
     try {
-        lastPageRequest = 'college';
-        lastPageRequestCollege = college;
-        let response = await fetch('college/' + college);
-        let body = await response.text();
-        if (response.status != 200) {
+        var search = document.getElementById('tableSearch').value;
+        if (search === '') {
+            await genFullTable(lastPageRequestCollege);
+        } else {
+            var filter = search.toUpperCase();
+            var response = await fetch('college/' + lastPageRequestCollege + '/s/' + filter);
+            var body = await response.text();
+            if (response.status != 200) {
+                throw body;
+            }
+            body = await JSON.parse(body);
+            await genTable(lastPageRequestCollege, body['number_events']);
+        }
+    } catch (e) {
+        throw (e);
+    }
+}
+
+async function genFullTable(college) {
+    try {
+        var response = await fetch('college/' + college);
+        var body = await response.text();
+        if (response.status !== 200) {
             throw body;
         }
         body = await JSON.parse(body);
         document.getElementById('nav-college-name').innerHTML = body['college_name'];
-        if (body['number_events'] == 0) {
+    }
+    catch (e) {
+        throw (e);
+    }
+
+    document.getElementById('content_above').innerHTML = `<div class="form-group">
+    <input type="text" onkeyup="tableFilter()" class="form-control my-form-search" id="tableSearch" placeholder="search">
+    </div>`;
+    lastPageRequestCollegeEvents = body.number_events;
+    await genTable(college, body.number_events);
+}
+
+
+async function genAdminTable(college) {
+    document.getElementById('content_above').innerHTML = '';
+    document.getElementById('content_footer').innerHTML = '<form id="admin"><button type="submit" class="btn btn-secondary">exit admin</button></form>';
+    document.getElementById('admin').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        await genFullTable(lastPageRequestCollege);
+    });
+    var response = await fetch('college/' + college);
+    var body = await response.text();
+    if (response.status !== 200) {
+        throw body;
+    }
+    body = await JSON.parse(body);
+    var number_events = body.number_events;
+    try {
+        var no_events = false;
+        if (number_events.length === 0) {
             response = await fetch('/no_events');
-            body = await response.text();
+            var table = await response.text();
+            no_events = true;
+            document.getElementById('content').innerHTML = body;
+        }
+        if (no_events === false) {
+            table = `<table class="table" id="eventTable"><thead><tr>
+                <th scope="col">Event</th>
+                <th scope="col">Date</th>
+                <th scope="col">Available Places</th>
+                <th scope="col">Total Places</th>
+                <th scope="col">Edit Event</th>
+                <th scope="col">Delete Event</th>
+                <th scope="col">Get Users Attending</th>
+                </tr></thead> <tbody>`;
+            for (var i = 0; i < number_events.length; i++) {
+                let response = await fetch('college/' + college + '/' + number_events[i].toString());
+                let event = await response.text();
+                if (response.status != 200) {
+                    // could force a singn out here for invalid credemtials
+                    // await signOut();
+                    throw event;
+                }
+                event = await JSON.parse(event);
+                table += '<tr>' +
+                    '<td> <input type="text" class="form-control" id="event_' + number_events[i] + '" value="' + event['event'] + '"></td>' +
+                    '<td> <input type="text" class="form-control" id="date_' + number_events[i] + '" value="' + event['date'] + '"></td>' +
+                    '<td> <input type="text" class="form-control" id="space_' + number_events[i] + '" value="' + event['space'] + '"></td>' +
+                    '<td> <input type="text" class="form-control" id="total_space_' + number_events[i] + '" value="' + event['total_space'] + '"></td>' +
+                    '<td>' + '<button id="edit_' + number_events[i] + '" type="submit" class="btn btn-primary btn-block">edit</button></td>' +
+                    '<td>' + '<button id="delete_' + number_events[i] + '" type="submit" class="btn btn-primary btn-block">delete</button></td>' +
+                    '<td>' + '<button class="btn btn-primary btn-block" id="users_' + number_events[i] + '">fetch users</button>' + '</td>' +
+                    '</tr>';
+            }
+            table += '</tbody></table>';
+        }
+        var create = '<table class="table" id="eventTable"><thead><tr>' +
+            '<th scope="col">Create New Event</th></tr></thead><tr>' +
+            '<td> <input type="text" class="form-control" id="event_create" placeholder="Name"></td>' +
+            '<td> <input type="text" class="form-control" id="date_create" placeholder="Date"></td>' +
+            '<td> <input type="number" class="form-control" id="space_create" placeholder="Available Spaces"></td>' +
+            '<td> <input type="number" class="form-control" id="total_space_create" placeholder="Total Spaces"></td>' +
+            '<td> <button type="submit" id="create_submit" class="btn btn-primary btn-block">create</button></td></tr>' +
+            '</table>';
+        document.getElementById('content').innerHTML = table + create;
+        if (no_events === false) {
+            for (let i in number_events) {
+                document.getElementById('delete_' + number_events[i]).addEventListener('click', async function (event) {
+                    event.preventDefault();
+                    var body;
+                    try {
+                        var r = confirm('Confirm deletion of event?');
+                        if (r == true) {
+                            var response = await fetch('admin/' + college + '/d/' + number_events[i], { method: 'DELETE' });
+                            if (response.status != 200) {
+                                body = await response.text();
+                                throw body;
+                            }
+                            await genAdminTable(college);
+                            alert('Event Deleted');
+                        }
+                    } catch (e) {
+                        alert(e);
+                    }
+                });
+                document.getElementById('edit_' + number_events[i]).addEventListener('click', async function (event) {
+                    event.preventDefault();
+                    try {
+                        let response = await fetch('admin/' + college + '/e/' + number_events[i], {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                'event': document.getElementById('event_' + number_events[i]).value,
+                                'date': document.getElementById('date_' + number_events[i]).value,
+                                'space': parseInt(document.getElementById('space_' + number_events[i]).value),
+                                'total_space': parseInt(document.getElementById('total_space_' + number_events[i]).value)
+                            }),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        if (response.status != 200) {
+                            let body = await response.text();
+                            throw body;
+                        }
+                        await genAdminTable(college);
+                        alert('Event Modified');
+                    } catch (e) {
+                        alert(e);
+                    }
+                });
+                document.getElementById('users_' + number_events[i]).addEventListener('click', async function (event) {
+                    event.preventDefault();
+                    try {
+                        let response = await fetch('admin/' + college + '/u/' + number_events[i]);
+                        let body = await response.text();
+                        if (response.status != 200) {
+                            throw body;
+                        }
+                        body = await JSON.parse(body);
+                        if (Object.keys(body).length === 0 && body.constructor === Object) {
+                            document.getElementById('content_above').innerHTML = 'No users signed up for this event';
+                        } else {
+                            var table = '<table class="table"><thead><tr><th scope="col">Email</td><th scope="col">Name</td></tr></thead>';
+                            for (var email in body) {
+                                table += '<tr><td>' + String(email) + '</td><td>' + body[email] + '</td></td>';
+                            }
+                            table += '</table>';
+                            document.getElementById('content_above').innerHTML = table;
+                        }
+                    } catch (e) {
+                        alert(e);
+                    }
+                });
+            }
+        }
+        document.getElementById('create_submit').addEventListener('click', async function (event) {
+            event.preventDefault();
+            try {
+                let response = await fetch('admin/' + college + '/c', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        'event': document.getElementById('event_create').value,
+                        'date': document.getElementById('date_create').value,
+                        'space': parseInt(document.getElementById('space_create').value),
+                        'total_space': parseInt(document.getElementById('total_space_create').value)
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (response.status != 200) {
+                    let body = await response.text();
+                    throw body;
+                }
+                await genAdminTable(college);
+                alert('Event Created');
+            } catch (e) {
+                alert(e);
+            }
+        });
+    }
+    catch (e) {
+        alert(e);
+    }
+}
+
+async function genTable(college, number_events) {
+    try {
+        var admin = await fetch('/admin/' + lastPageRequestCollege);
+        if (admin.status === 200) {
+            document.getElementById('content_footer').innerHTML = '<form id="admin"><button type="submit" class="btn btn-secondary">admin - modify events</button></form>';
+            document.getElementById('admin').addEventListener('submit', async function (event) {
+                event.preventDefault();
+                await genAdminTable(lastPageRequestCollege);
+            });
+        } else {
+            document.getElementById('content_footer').innerHTML = '';
+        }
+        if (number_events.length === 0) {
+            var response = await fetch('/no_events');
+            var body = await response.text();
             document.getElementById('content').innerHTML = body;
         }
         else {
-            var table = '<table class="table"><thead><tr>' +
-                '<th scope="col">Event</th>' +
-                '<th scope="col">Date</th>' +
-                '<th scope="col">Available Places</th>' +
-                '<th scope="col" style="width: 25%">Sign Up</th>' +
-                '</tr></thead> <tbody>';
-            for (let i = 0; i < body['number_events']; i++) {
-                let response = await fetch('college/' + college + '/' + i, {
-                    method: 'POST',
-                    mode: 'cors',
-                    cache: 'no-cache',
-                    credentials: 'same-origin',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    redirect: 'follow',
-                    referrer: 'no-referrer',
-                    body: JSON.stringify({ 'view': true, 'idtoken': clientIDToken }),
-                });
+            var table = `<table class="table" id="eventTable"><thead><tr>
+                <th scope="col">Event</th>
+                <th scope="col">Date</th>
+                <th scope="col">Available Places</th>
+                <th scope="col" style="width: 25%">Sign Up</th>
+                </tr></thead> <tbody>`;
+            for (var i = 0; i < number_events.length; i++) {
+                let response = await fetch('college/' + college + '/' + number_events[i].toString());
                 let event = await response.text();
                 if (response.status != 200) {
                     // could force a singn out here for invalid credemtials
@@ -125,43 +328,33 @@ async function genTable(college) {
                 event = await JSON.parse(event);
                 var button;
                 if (event['button_status'] == 'default') {
-                    button = '<button type="submit" class="btn btn-primary btn-block">sign up</button>';
+                    button = '<button id="event_' + number_events[i] + '"type="submit" class="btn btn-primary btn-block">sign up</button>';
                 } else if (event['button_status'] == 'signed_up') {
-                    button = '<button type="submit" class="btn btn-secondary btn-block">cancel</button>';
+                    button = '<button id="event_' + number_events[i] + '"type="submit" class="btn btn-secondary btn-block">cancel</button>';
                 } else if (event['button_status'] == 'full') {
-                    button = '<button type="submit" class="btn btn-secondary btn-block disabled">fully booked</button>';
+                    button = '<button id="event_' + number_events[i] + '"type="submit" class="btn btn-secondary btn-block disabled">fully booked</button>';
                 }
                 table += '<tr>' +
                     '<th scope="row">' + event['event'] + '</th>' +
                     '<td>' + event['date'] + '</td>' +
                     '<td>' + event['space'] + '/' + event['total_space'] + '</td>' +
-                    '<td>' + '<form id="event_' + i + '">' + button + '</td>' +
-                    '</form>' + '</tr>';
+                    '<td>' + button + '</td>' + '</tr>';
             }
             table += '</tbody></table>';
             document.getElementById('content').innerHTML = table;
-            for (let i = 0; i < body['number_events']; i++) {
-                document.getElementById('event_' + i).addEventListener('submit', async function (event) {
+            for (let i in number_events) {
+                document.getElementById('event_' + number_events[i]).addEventListener('click', async function (event) {
                     event.preventDefault();
-                    if (document.getElementById('event_' + i).innerText !== 'fully booked') {
+                    if (document.getElementById('event_' + number_events[i]).innerText !== 'fully booked') {
                         try {
-                            let response = await fetch('college/' + college + '/' + i, {
+                            let response = await fetch('college/' + college + '/' + number_events[i], {
                                 method: 'POST',
-                                mode: 'cors',
-                                cache: 'no-cache',
-                                credentials: 'same-origin',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                redirect: 'follow',
-                                referrer: 'no-referrer',
-                                body: JSON.stringify({ 'view': false, 'idtoken': clientIDToken }),
                             });
                             if (response['status'] != 200) {
                                 let body = await response.text();
                                 throw body;
                             }
-                            await genTable(college);
+                            await genTable(college, lastPageRequestCollegeEvents);
                         }
                         catch (e) {
                             alert(e);
@@ -176,7 +369,7 @@ async function genTable(college) {
     }
 }
 
-async function onSignIn(googleUser) {
+async function onSignIn(googleUser) { // eslint-disable-line
     try {
         var profile = googleUser.getBasicProfile();
         document.getElementById('nav-account').innerHTML = profile.getEmail();
@@ -189,26 +382,18 @@ async function onSignIn(googleUser) {
         var id_token = googleUser.getAuthResponse().id_token;
         var response = await fetch('gtokenin', {
             method: 'POST',
-            mode: 'cors',
-            cache: 'no-cache',
-            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            redirect: 'follow',
-            referrer: 'no-referrer',
             body: 'idtoken=' + id_token,
         });
         let body = await response.text();
         if (response.status != 200) {
             throw body;
         }
-        clientIDToken = id_token; // set client file ID token
-        // console.log("ID Token: " + id_token);
-
         // refresh page content to reflect sign in
         if (lastPageRequest !== 'home') {
-            await genTable(lastPageRequestCollege);
+            await genTable(lastPageRequestCollege, lastPageRequestCollegeEvents);
         }
     } catch (e) {
         alert(e);

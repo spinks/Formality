@@ -35,25 +35,32 @@
 
 <body>
     <nav class="navbar navbar-expand-md navbar-light fixed-top">
-        <ul class="nav navbar-nav">
-            <div class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                    id="nav-college-name">
-                    College
-                </a>
-                <a class="dropdown-menu" id="navbarDropdownMenuCollege">
-                    <!-- this is build in index.js via get request -->
-                </a>
-            </div>
-        </ul>
-        <a class="navbar-brand mx-auto" href="#" , id="navbarBrand">Formality.</a>
-        <ul class="nav navbar-nav ml-auto">
-            <div class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="nav-account" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                    Sign In </a>
-                <a class="dropdown-menu dropdown-menu-right">
-                    <form class="px-4 py-0">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse w-100 order-1 order-md-0 dual-collapse2" id="navbarCollege">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false" id="nav-college-name" href="#">
+                        College
+                    </a>
+                    <a class="dropdown-menu" id="navbarDropdownMenuCollege">
+                        <!-- this is build in index.js via get request -->
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="mx-auto order-0">
+            <a class="navbar-brand mx-auto" id="navbarBrand">Formality.</a>
+        </div>
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="nav-account" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false" href="#">
+                        Sign In </a>
+                    <form class="dropdown-menu dropdown-menu-right px-4 py-0">
                         <div class="div py-2">
                             <div class="g-signin2" data-width="inherit" data-onsuccess="onSignIn" id="google-signin">
                             </div>
@@ -63,23 +70,15 @@
                                 out</button>
                         </div>
                     </form>
-                    <!-- <div class="form-group">
-                            <input type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control" id="exampleDropdownFormPassword1"
-                                placeholder="password">
-                        </div>
-                        <button type="submit" id="account_submit" class="btn btn-primary btn-block">sign in</button>
-                        <div class="dropdown-divider"></div>
-                        <button type="submit" id="account_create" class="btn btn-secondary btn-block">create an
-                            account</button> -->
-                </a>
-            </div>
-        </ul>
+                </li>
+            </ul>
+        </div>
     </nav>
 
-    <main role="main" class="container">
+    <main class="container">
+        <div id="content_above">
+
+        </div>
         <div id="content">
             <div class="body-padded">
                 <p class="lead">Essential Formal and Ball Signup</p>
@@ -87,6 +86,9 @@
 
                 <!-- <img src="images/bg.jpeg" class="figure-image img-fluid" alt="Background"> -->
             </div>
+        </div>
+
+        <div class="footer" id="content_footer">
         </div>
     </main>
 
