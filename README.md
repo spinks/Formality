@@ -24,6 +24,7 @@ Allows the user to get an object with all colleges, keys are the internal ids an
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/college`
 #### Resource Information
+| Detail | Info |
 | --- | --- |
 | Response format | JSON |
 | Requires authentication? | No |
@@ -39,11 +40,12 @@ Responds with an object containing the college display name and a list of event 
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/college/:col`
 #### Resource Information
+| Detail | Info |
 | --- | --- |
 | Response format | JSON |
 | Requires authentication? | No |
 #### Parameters
-| Name | Required | Description | Default | Example
+| Name | Required | Description | Default | Example |
 | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 #### Example Request
@@ -56,11 +58,12 @@ Responds with an object containing the college display name and a list of event 
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/college/:col/s/:query`
 #### Resource Information
+| Detail | Info |
 | --- | --- |
 | Response format | JSON |
 | Requires authentication? | No |
 #### Parameters
-| Name | Required | Description | Default | Example
+| Name | Required | Description | Default | Example |
 | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | query | yes | A query string | none | `formal` |
@@ -75,11 +78,12 @@ Responds with an object containing detailed information about an event. If a jwt
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/college/:col/:event`
 #### Resource Information
+| Detail | Info |
 | --- | --- |
 | Response format | JSON |
 | Requires authentication? | No |
 #### Parameters
-| Name | Required | Description | Default | Example
+| Name | Required | Description | Default | Example |
 | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
@@ -95,11 +99,12 @@ Responds with status 200 if the post request was sucsessful. Either signs a user
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/college/:col/:event`
 #### Resource Information
+| Detail | Info |
 | --- | --- |
 | Response format | String |
 | Requires authentication? | No |
 #### Parameters
-| Name | Required | Description | Default | Example
+| Name | Required | Description | Default | Example |
 | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
@@ -115,6 +120,7 @@ Returns the website display string for the instance where there are no events fo
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/no_events`
 #### Resource Information
+| Detail | Info |
 | --- | --- |
 | Response format | String |
 | Requires authentication? | No |
@@ -132,11 +138,12 @@ Responds with status 200 if the authenticated user is an adminstrator for the gi
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/admin/:col`
 #### Resource Information
+| Detail | Info |
 | --- | --- |
 | Response format | String |
 | Requires authentication? | Yes |
 #### Parameters
-| Name | Required | Description | Default | Example
+| Name | Required | Description | Default | Example |
 | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | jwtoken (cookie) | yes (not if refresh token passed) | The cookied value of a login token | none | a long alphanumeric key |
@@ -154,11 +161,12 @@ Responds with status 200 if the post request was sucsessful. Allows for editing 
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/admin/:col/e/:event`
 #### Resource Information
+| Detail | Info |
 | --- | --- |
 | Response format | String |
 | Requires authentication? | Yes |
 #### Parameters
-| Name | Required | Description | Default | Example
+| Name | Required | Description | Default | Example |
 | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
@@ -178,11 +186,12 @@ Responds with status 200 if the post request was sucsessful. Allows for deleting
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/admin/:col/d/:event`
 #### Resource Information
+| Detail | Info |
 | --- | --- |
 | Response format | String |
 | Requires authentication? | Yes |
 #### Parameters
-| Name | Required | Description | Default | Example
+| Name | Required | Description | Default | Example |
 | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
@@ -198,11 +207,12 @@ Responds with status 201 if the post request was sucsessful. Allows for creating
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/admin/:col/c`
 #### Resource Information
+| Detail | Info |
 | --- | --- |
 | Response format | String |
 | Requires authentication? | Yes |
 #### Parameters
-| Name | Required | Description | Default | Example
+| Name | Required | Description | Default | Example |
 | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
@@ -222,11 +232,12 @@ Responds with an object containing the user emails as keys and user names as val
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/admin/:col/u/:event`
 #### Resource Information
+| Detail | Info |
 | --- | --- |
 | Response format | JSON |
 | Requires authentication? | Yes |
 #### Parameters
-| Name | Required | Description | Default | Example
+| Name | Required | Description | Default | Example |
 | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
@@ -243,11 +254,12 @@ Responds with status 200 if the passed idtoken was able to be verified with the 
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/gtokenin`
 #### Resource Information
+| Detail | Info |
 | --- | --- |
 | Response format | String |
 | Requires authentication? | Yes |
 #### Parameters
-| Name | Required | Description | Default | Example
+| Name | Required | Description | Default | Example |
 | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
@@ -262,6 +274,7 @@ Logout protocol. Removes the jwrefresh token from the database and clears the br
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/gtokenout`
 #### Resource Information
+| Detail | Info |
 | --- | --- |
 | Response format | String |
 | Requires authentication? | No |
