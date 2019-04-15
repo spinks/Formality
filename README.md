@@ -84,7 +84,7 @@ Responds with an object containing detailed information about an event. If a jwt
 | Requires authentication? | No |
 #### Parameters
 | Name | Required | Description | Default | Example |
-| --- | --- |
+| --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
 | jwtoken (cookie) | no | The cookied value of a login token | none | a long alphanumeric key |
@@ -105,7 +105,7 @@ Responds with status 200 if the post request was sucsessful. Either signs a user
 | Requires authentication? | No |
 #### Parameters
 | Name | Required | Description | Default | Example |
-| --- | --- |
+| --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
 | jwtoken (cookie) | yes (not if refresh token passed) | The cookied value of a login token | none | a long alphanumeric key |
@@ -144,7 +144,7 @@ Responds with status 200 if the authenticated user is an adminstrator for the gi
 | Requires authentication? | Yes |
 #### Parameters
 | Name | Required | Description | Default | Example |
-| --- | --- |
+| --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | jwtoken (cookie) | yes (not if refresh token passed) | The cookied value of a login token | none | a long alphanumeric key |
 | jwrefresh (cookie) | yes | The cookied value of a login refresh token | none | a long alphanumeric key |
@@ -167,7 +167,7 @@ Responds with status 200 if the post request was sucsessful. Allows for editing 
 | Requires authentication? | Yes |
 #### Parameters
 | Name | Required | Description | Default | Example |
-| --- | --- |
+| --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
 | event (body) | yes | New event name, string | none | `Formal` |
@@ -192,7 +192,7 @@ Responds with status 200 if the post request was sucsessful. Allows for deleting
 | Requires authentication? | Yes |
 #### Parameters
 | Name | Required | Description | Default | Example |
-| --- | --- |
+| --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
 | jwtoken (cookie) | yes (not if refresh token passed) | The cookied value of a login token | none | a long alphanumeric key |
@@ -213,7 +213,7 @@ Responds with status 201 if the post request was sucsessful. Allows for creating
 | Requires authentication? | Yes |
 #### Parameters
 | Name | Required | Description | Default | Example |
-| --- | --- |
+| --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
 | event (body) | yes | New event name, string | none | `Formal` |
@@ -238,7 +238,7 @@ Responds with an object containing the user emails as keys and user names as val
 | Requires authentication? | Yes |
 #### Parameters
 | Name | Required | Description | Default | Example |
-| --- | --- |
+| --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
 | jwtoken (cookie) | yes (not if refresh token passed) | The cookied value of a login token | none | a long alphanumeric key |
@@ -260,7 +260,7 @@ Responds with status 200 if the passed idtoken was able to be verified with the 
 | Requires authentication? | Yes |
 #### Parameters
 | Name | Required | Description | Default | Example |
-| --- | --- |
+| --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
 | idtoken | yes | An id token given to the client from the Google sign-in API | none | an alphanumeric key |
