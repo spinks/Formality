@@ -296,7 +296,7 @@ app.post('/gtokenin', async function (req, res) {
 });
 
 app.post('/gtokenout', async function (req, res) {
-    payload = null
+    payload = null;
     refresh.delete(req.cookies.jwrefresh);
     res.clearCookie('jwtoken');
     res.clearCookie('jwrefresh');
