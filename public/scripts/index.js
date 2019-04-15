@@ -3,6 +3,17 @@ var lastPageRequestCollege = null;
 var lastPageRequestCollegeEvents = null;
 
 document.addEventListener('DOMContentLoaded', function () {
+    async function pollSignedIn() {
+        if (document.cookie.jwtoken !== undefined) {
+            var email = await fetch('/signedin');
+            if (email.status == 200) {
+                email = await email.text();
+                document.getElementById('nav-account').innerHTML = email;
+            }
+        }
+    }
+    pollSignedIn();
+
     async function buildDropMenu() {
         try {
             let response = await fetch('/college');
@@ -48,7 +59,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('google-signout').addEventListener('click', async function () {
+    document.getElementById('google-signout').addEventListener('click', async function (event) {
+        event.preventDefault();
         await signOut();
     });
 });
@@ -67,26 +79,11 @@ async function signOut() {
         if (lastPageRequest !== 'home') {
             await genTable(lastPageRequestCollege, lastPageRequestCollegeEvents);
         }
-    } catch (e) {
+    }
+    catch (e) {
         alert(e);
     }
 }
-
-// function tableFilter() {
-//     var filter = document.getElementById("tableSearch").value.toUpperCase();
-//     var table = document.getElementById("eventTable");
-//     var tr = table.getElementsByTagName("tr");
-//     for (i = 1; i < tr.length; i++) {
-//         th = tr[i].getElementsByTagName("th")[0].innerText;
-//         if (th) {
-//             if (th.toUpperCase().indexOf(filter) > -1) {
-//                 tr[i].style.display = "";
-//             } else {
-//                 tr[i].style.display = "none";
-//             }
-//         }
-//     }
-// }
 
 async function tableFilter() { // eslint-disable-line
     try {
@@ -122,9 +119,7 @@ async function genFullTable(college) {
         throw (e);
     }
 
-    document.getElementById('content_above').innerHTML = `<div class="form-group">
-    <input type="text" onkeyup="tableFilter()" class="form-control my-form-search" id="tableSearch" placeholder="search">
-    </div>`;
+    document.getElementById('content_above').innerHTML = '<div class="form-group"><input type="text" onkeyup="tableFilter()" class="form-control my-form-search" id="tableSearch" placeholder="search"></div>';
     lastPageRequestCollegeEvents = body.number_events;
     await genTable(college, body.number_events);
 }
@@ -153,15 +148,15 @@ async function genAdminTable(college) {
             document.getElementById('content').innerHTML = body;
         }
         if (no_events === false) {
-            table = `<table class="table" id="eventTable"><thead><tr>
-                <th scope="col">Event</th>
-                <th scope="col">Date</th>
-                <th scope="col">Available Places</th>
-                <th scope="col">Total Places</th>
-                <th scope="col">Edit Event</th>
-                <th scope="col">Delete Event</th>
-                <th scope="col">Get Users Attending</th>
-                </tr></thead> <tbody>`;
+            table = '<table class="table" id="eventTable"><thead><tr>' +
+                '<th scope="col">Event</th>' +
+                '<th scope="col">Date</th>' +
+                '<th scope="col">Available Places</th>' +
+                '<th scope="col">Total Places</th>' +
+                '<th scope="col">Edit Event</th>' +
+                '<th scope="col">Delete Event</th>' +
+                '<th scope="col">Get Users Attending</th>' +
+                '</tr></thead> <tbody>';
             for (var i = 0; i < number_events.length; i++) {
                 let response = await fetch('college/' + college + '/' + number_events[i].toString());
                 let event = await response.text();
@@ -297,8 +292,8 @@ async function genTable(college, number_events) {
     try {
         var admin = await fetch('/admin/' + lastPageRequestCollege);
         if (admin.status === 200) {
-            document.getElementById('content_footer').innerHTML = '<form id="admin"><button type="submit" class="btn btn-secondary">admin - modify events</button></form>';
-            document.getElementById('admin').addEventListener('submit', async function (event) {
+            document.getElementById('content_footer').innerHTML = '<button type="submit" id="admin" class="btn btn-secondary">admin - modify events</button>';
+            document.getElementById('admin').addEventListener('click', async function (event) {
                 event.preventDefault();
                 await genAdminTable(lastPageRequestCollege);
             });
@@ -311,12 +306,12 @@ async function genTable(college, number_events) {
             document.getElementById('content').innerHTML = body;
         }
         else {
-            var table = `<table class="table" id="eventTable"><thead><tr>
-                <th scope="col">Event</th>
-                <th scope="col">Date</th>
-                <th scope="col">Available Places</th>
-                <th scope="col" style="width: 25%">Sign Up</th>
-                </tr></thead> <tbody>`;
+            var table = '<table class="table" id="eventTable"><thead><tr>' +
+                '<th scope="col">Event</th>' +
+                '<th scope="col">Date</th>' +
+                '<th scope="col">Available Places</th>' +
+                '<th scope="col" style="width: 25%">Sign Up</th>' +
+                '</tr></thead> <tbody>';
             for (var i = 0; i < number_events.length; i++) {
                 let response = await fetch('college/' + college + '/' + number_events[i].toString());
                 let event = await response.text();
@@ -373,14 +368,8 @@ async function onSignIn(googleUser) { // eslint-disable-line
     try {
         var profile = googleUser.getBasicProfile();
         document.getElementById('nav-account').innerHTML = profile.getEmail();
-        // console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-        // console.log('Name: ' + profile.getName());
-        // console.log('Image URL: ' + profile.getImageUrl());
-        // console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-
-        // The ID token you need to pass to your backend:
         var id_token = googleUser.getAuthResponse().id_token;
-        var response = await fetch('gtokenin', {
+        var response = await fetch('/gtokenin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

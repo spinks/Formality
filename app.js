@@ -5,7 +5,7 @@ var fs = require('fs');
 
 var jwt = require('jsonwebtoken');
 var crypto = require('crypto');
-var secret = 'formality_secret';
+var secret = 'secretcode';
 var payload;
 
 var cookieParser = require('cookie-parser');
@@ -18,19 +18,66 @@ app.use(express.static('public'));
 
 var events = require('./events.json');
 
-// viewed at http://localhost:8080
+async function isCollege(req, res, next) {
+    if (!(req.params.col in events)) {
+        return res.status(400).send('invalid college');
+    } else {
+        return next();
+    }
+}
+
+async function isEvent(req, res, next) {
+    if (!(req.params.event in events[req.params.col]['array'])) {
+        return res.status(400).send('invalid event number');
+    } else {
+        return next();
+    }
+}
+
+async function tokenHandler(req, res, next) {
+    try {
+        req.formality_payload = await jwt.verify(req.cookies.jwtoken, secret, { algorithms: 'HS256' });
+        return next();
+    } catch (e) {
+        if (req.cookies.jwrefresh === undefined) {
+            return res.status(403).send('sign in to perform action');
+        }
+        if (e.name === 'TokenExpiredError' || e.name === 'JsonWebTokenError') {
+            var refreshed = await refreshToken(req.cookies.jwrefresh);
+            if (refreshed !== null) {
+                req.formality_payload = await jwt.verify(refreshed, secret, { algorithms: 'HS256' });
+                res.cookie('jwtoken', refreshed);
+                return next();
+            } else {
+                res.clearCookie('jwtoken');
+                return res.status(403).send('unable to refresh tokens');
+            }
+        } else {
+            return res.status(403).send(e.message);
+        }
+    }
+}
+
+async function isAdmin(req, res, next) {
+    var userid = req.formality_payload.userid;
+    if (events[req.params.col]['admins'].includes(userid)) {
+        return next();
+    } else {
+        return res.status(403).send('not an admin');
+    }
+}
+
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 
-let home = {
-    'nav-college-name': 'College',
-    'content_above': '',
-    'content': '<div class="body-padded"> <p class= "lead"> Essential Formal and Ball Signup</p> <p>Choose a college and sign in to get started</p></div>',
-    'content_footer': ''
-};
-
 app.get('/home', function (req, res) {
+    var home = {
+        'nav-college-name': 'College',
+        'content_above': '',
+        'content': '<div class="body-padded"> <p class= "lead"> Essential Formal and Ball Signup</p> <p>Choose a college and sign in to get started</p></div>',
+        'content_footer': ''
+    };
     res.send(home);
 });
 
@@ -42,25 +89,19 @@ app.get('/college', function (req, res) {
     return res.send(college_dict);
 });
 
-app.get('/college/:col', function (req, res) {
+app.get('/college/:col', isCollege, function (req, res) {
     // returns college name and number of events for client js to build table
-    if (!(req.params.col in events)) {
-        return res.status(400).send('invalid college');
-    }
     res.send({
         'college_name': events[req.params.col]['college_name'],
         'number_events': Object.keys(events[req.params.col]['array'])
     });
 });
 
-app.get('/college/:col/s/:query', function (req, res) {
+app.get('/college/:col/s/:query', isCollege, function (req, res) {
     // returns college name and number of events for client js to build table
-    if (!(req.params.col in events)) {
-        return res.status(400).send('invalid college');
-    }
     var number_events = [];
     for (var key in events[req.params.col]['array']) {
-        if (events[req.params.col]['array'][key]['event'].toUpperCase().indexOf(req.params.query) > -1) {
+        if (events[req.params.col]['array'][key]['event'].toUpperCase().indexOf(req.params.query.toUpperCase()) > -1) {
             number_events.push(key);
         }
     }
@@ -70,16 +111,10 @@ app.get('/college/:col/s/:query', function (req, res) {
     });
 });
 
-app.get('/college/:col/:event', async function (req, res) {
-    if (!(req.params.col in events)) {
-        return res.status(400).send('invalid college');
-    }
-    if (!(req.params.event in events[req.params.col]['array'])) {
-        return res.status(400).send('invalid event number');
-    }
+app.get('/college/:col/:event', [isCollege, isEvent], async function (req, res) {
     var event = events[req.params.col]['array'][req.params.event];
     var button;
-    if (req.cookies.jwtoken === null || req.cookies.jwtoken === undefined) {
+    if (req.cookies.jwtoken === undefined) {
         if (event['space'] == 0) {
             button = 'full';
         } else {
@@ -97,13 +132,14 @@ app.get('/college/:col/:event', async function (req, res) {
             var verified_token = await jwt.verify(req.cookies.jwtoken, secret, { algorithms: 'HS256' });
             var userid = verified_token.userid;
         } catch (e) {
-            if (e.name === 'TokenExpiredError') {
+            if (e.name === 'TokenExpiredError' || e.name === 'JsonWebTokenError') {
                 var refreshed = await refreshToken(req.cookies.jwrefresh);
-                res.cookie('jwtoken', refreshed);
-                if (refreshed !== false) {
+                if (refreshed !== null) {
+                    res.cookie('jwtoken', refreshed);
                     verified_token = await jwt.verify(refreshed, secret, { algorithms: 'HS256' });
                     userid = verified_token.userid;
                 } else {
+                    res.clearCookie('jwtoken');
                     return res.status(403).send('unable to refresh tokens');
                 }
             } else {
@@ -127,82 +163,31 @@ app.get('/college/:col/:event', async function (req, res) {
     }
 });
 
-app.post('/college/:col/:event', async function (req, res) {
+app.post('/college/:col/:event', [isCollege, tokenHandler, isEvent], async function (req, res) {
     // body contains -> view (true/false), signup (true/false optional)
     // idtoken (string optional (will return 403 if signup true) -> for verification / view permissions)
-    if (!(req.params.col in events)) {
-        return res.status(400).send('invalid college');
-    }
-    if (!(req.params.event in events[req.params.col]['array'])) {
-        return res.status(400).send('invalid event number');
-    }
     var event = events[req.params.col]['array'][req.params.event];
-    if (req.cookies.jwtoken === null || req.cookies.jwtoken === undefined) {
-        return res.status(403).send('Sign in to perform action');
-    } else { // idtoken passed
-        try {
-            var verified_token = await jwt.verify(req.cookies.jwtoken, secret, { algorithms: 'HS256' });
-            var userid = verified_token.userid;
-        } catch (e) {
-            if (e.name === 'TokenExpiredError') {
-                var refreshed = await refreshToken(req.cookies.jwrefresh);
-                res.cookie('jwtoken', refreshed);
-                if (refreshed !== false) {
-                    verified_token = await jwt.verify(refreshed, secret, { algorithms: 'HS256' });
-                    userid = verified_token.userid;
-                } else {
-                    return res.status(403).send('unable to refresh tokens');
-                }
-            } else {
-                return res.status(403).send(e.message);
-            }
-        }
-        if (userid in event['users']) {
-            event['space'] += 1;
-            delete event['users'][userid];
-        } else if (event['space'] > 0) {
-            event['space'] -= 1;
-            event['users'][userid] = {
-                'username': verified_token.name, 'email': verified_token.email
-            };
-        }
-        fs.writeFileSync('./events.json', JSON.stringify(events));
+    var payload = req.formality_payload;
+    if (payload.userid in event['users']) {
+        event['space'] += 1;
+        delete event['users'][payload.userid];
+    } else if (event['space'] > 0) {
+        event['space'] -= 1;
+        event['users'][payload.userid] = {
+            'username': payload.name, 'email': payload.email
+        };
     }
+    fs.writeFileSync('./events.json', JSON.stringify(events));
     res.end('ok');
 });
 
-var no_events = '<p>There are currently no events for this college</p>';
-
 app.get('/no_events', async function (req, res) {
+    var no_events = '<p>There are currently no events for this college</p>';
     res.send(no_events);
 });
 
-app.get('/admin/:col', async function (req, res) {
-    if (!(req.params.col in events)) {
-        return res.status(400).send('invalid college');
-    }
-    try {
-        var verified_token = await jwt.verify(req.cookies.jwtoken, secret, { algorithms: 'HS256' });
-        var userid = verified_token.userid;
-    } catch (e) {
-        if (e.name === 'TokenExpiredError') {
-            var refreshed = await refreshToken(req.cookies.jwrefresh);
-            res.cookie('jwtoken', refreshed);
-            if (refreshed !== false) {
-                verified_token = await jwt.verify(refreshed, secret, { algorithms: 'HS256' });
-                userid = verified_token.userid;
-            } else {
-                return res.status(403).send('unable to refresh tokens');
-            }
-        } else {
-            return res.status(403).send(e.message);
-        }
-    }
-    if (events[req.params.col]['admins'].includes(userid)) {
-        return res.status(200).send('ok');
-    } else {
-        return res.status(403).send('not an admin');
-    }
+app.get('/admin/:col', [isCollege, tokenHandler, isAdmin], async function (req, res) {
+    return res.send('ok');
 });
 
 function eventAssertions(body) {
@@ -219,34 +204,11 @@ function eventAssertions(body) {
     return true;
 }
 
-app.post('/admin/:col/e/:event', async function (req, res) {
-    if (!(req.params.col in events)) {
-        return res.status(400).send('invalid college');
-    }
+app.post('/admin/:col/e/:event', [isCollege, tokenHandler, isAdmin, isEvent], async function (req, res) {
     if (!(req.params.event in events[req.params.col]['array'])) {
         return res.status(400).send('invalid event number');
     }
     var event = events[req.params.col]['array'][req.params.event];
-    try {
-        var verified_token = await jwt.verify(req.cookies.jwtoken, secret, { algorithms: 'HS256' });
-        var userid = verified_token.userid;
-    } catch (e) {
-        if (e.name === 'TokenExpiredError') {
-            var refreshed = await refreshToken(req.cookies.jwrefresh);
-            res.cookie('jwtoken', refreshed);
-            if (refreshed !== false) {
-                verified_token = await jwt.verify(refreshed, secret, { algorithms: 'HS256' });
-                userid = verified_token.userid;
-            } else {
-                return res.status(403).send('unable to refresh tokens');
-            }
-        } else {
-            return res.status(403).send(e.message);
-        }
-    }
-    if (!(events[req.params.col]['admins'].includes(userid))) {
-        return res.status(403).send('not authenticated to modify events');
-    }
     if (!eventAssertions(req.body)) {
         return res.status(400).send('invalid event details');
     }
@@ -254,65 +216,22 @@ app.post('/admin/:col/e/:event', async function (req, res) {
     event['date'] = req.body.date;
     event['space'] = req.body.space;
     event['total_space'] = req.body.total_space;
-    // fs.writeFileSync('./events.json', JSON.stringify(events));
+    fs.writeFileSync('./events.json', JSON.stringify(events));
     return res.send('ok');
 });
 
-app.delete('/admin/:col/d/:event', async function (req, res) {
-    if (!(req.params.col in events)) {
-        return res.status(400).send('invalid college');
-    }
+app.delete('/admin/:col/d/:event', [isCollege, tokenHandler, isAdmin, isEvent], async function (req, res) {
     if (!(req.params.event in events[req.params.col]['array'])) {
         return res.status(400).send('invalid event number');
     }
-    try {
-        var verified_token = await jwt.verify(req.cookies.jwtoken, secret, { algorithms: 'HS256' });
-        var userid = verified_token.userid;
-    } catch (e) {
-        if (e.name === 'TokenExpiredError') {
-            var refreshed = await refreshToken(req.cookies.jwrefresh);
-            res.cookie('jwtoken', refreshed);
-            if (refreshed !== false) {
-                verified_token = await jwt.verify(refreshed, secret, { algorithms: 'HS256' });
-                userid = verified_token.userid;
-            } else {
-                return res.status(403).send('unable to refresh tokens');
-            }
-        } else {
-            return res.status(403).send(e.message);
-        }
-    }
-    if (!(events[req.params.col]['admins'].includes(userid))) {
-        return res.status(403).send('not authenticated to delete events');
-    }
     delete events[req.params.col]['array'][req.params.event];
-    // fs.writeFileSync('./events.json', JSON.stringify(events));
+    fs.writeFileSync('./events.json', JSON.stringify(events));
     return res.send('ok');
 });
 
-app.post('/admin/:col/c', async function (req, res) {
+app.post('/admin/:col/c', [isCollege, tokenHandler, isAdmin, isEvent], async function (req, res) {
     if (!eventAssertions(req.body)) {
         return res.status(400).send('invalid event details');
-    }
-    try {
-        var verified_token = await jwt.verify(req.cookies.jwtoken, secret, { algorithms: 'HS256' });
-        var userid = verified_token.userid;
-    } catch (e) {
-        if (e.name === 'TokenExpiredError') {
-            var refreshed = await refreshToken(req.cookies.jwrefresh);
-            res.cookie('jwtoken', refreshed);
-            if (refreshed !== false) {
-                verified_token = await jwt.verify(refreshed, secret, { algorithms: 'HS256' });
-                userid = verified_token.userid;
-            } else {
-                return res.status(403).send('unable to refresh tokens');
-            }
-        } else {
-            return res.status(403).send(e.message);
-        }
-    }
-    if (!(events[req.params.col]['admins'].includes(userid))) {
-        return res.status(403).send('not authenticated to create events');
     }
     var newid = 1;
     var event_ids = new Set(Object.keys(events[req.params.col]['array']).map(Number));
@@ -322,36 +241,13 @@ app.post('/admin/:col/c', async function (req, res) {
     newid = String(newid);
     events[req.params.col]['array'][newid] = req.body;
     events[req.params.col]['array'][newid]['users'] = {};
-    // fs.writeFileSync('./events.json', JSON.stringify(events));
-    return res.send('ok');
+    fs.writeFileSync('./events.json', JSON.stringify(events));
+    return res.status(201).send('ok');
 });
 
-app.get('/admin/:col/u/:event', async function (req, res) {
-    if (!(req.params.col in events)) {
-        return res.status(400).send('invalid college');
-    }
+app.get('/admin/:col/u/:event', [isCollege, tokenHandler, isAdmin, isEvent], async function (req, res) {
     if (!(req.params.event in events[req.params.col]['array'])) {
         return res.status(400).send('invalid event number');
-    }
-    try {
-        var verified_token = await jwt.verify(req.cookies.jwtoken, secret, { algorithms: 'HS256' });
-        var userid = verified_token.userid;
-    } catch (e) {
-        if (e.name === 'TokenExpiredError') {
-            var refreshed = await refreshToken(req.cookies.jwrefresh);
-            res.cookie('jwtoken', refreshed);
-            if (refreshed !== false) {
-                verified_token = await jwt.verify(refreshed, secret, { algorithms: 'HS256' });
-                userid = verified_token.userid;
-            } else {
-                return res.status(403).send('unable to refresh tokens');
-            }
-        } else {
-            return res.status(403).send(e.message);
-        }
-    }
-    if (!(events[req.params.col]['admins'].includes(userid))) {
-        return res.status(403).send('not authenticated to get user list');
     }
     var users = {};
     var userdb = events[req.params.col]['array'][req.params.event]['users'];
@@ -363,7 +259,7 @@ app.get('/admin/:col/u/:event', async function (req, res) {
 
 var refresh = new Set;
 async function refreshToken(jwrefresh) {
-    if (refresh.has(jwrefresh)) {
+    if (jwrefresh !== null && jwrefresh !== undefined && refresh.has(jwrefresh)) {
         var jwtoken = jwt.sign({
             userid: payload.sub,
             name: payload.name,
@@ -371,7 +267,7 @@ async function refreshToken(jwrefresh) {
         }, secret, { expiresIn: '10 minutes', algorithm: 'HS256' });
         return jwtoken;
     }
-    return false;
+    return null;
 }
 
 const { OAuth2Client } = require('google-auth-library');
@@ -400,9 +296,15 @@ app.post('/gtokenin', async function (req, res) {
 });
 
 app.post('/gtokenout', async function (req, res) {
+    payload = null
+    refresh.delete(req.cookies.jwrefresh);
     res.clearCookie('jwtoken');
     res.clearCookie('jwrefresh');
     res.end('ok');
+});
+
+app.get('/signedin', tokenHandler, async function (req, res) {
+    return res.send(req['formality_payload']['email']);
 });
 
 module.exports = app;
