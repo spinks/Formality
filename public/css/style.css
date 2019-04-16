@@ -24,6 +24,8 @@ body {
 .dropdown-menu {
     min-width:300px;
     /* margin-top: 10px; */
+    overflow:auto;
+    max-height: 75vh;
 }
 
 .dropdown-toggle {
