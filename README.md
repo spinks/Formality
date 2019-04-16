@@ -120,23 +120,6 @@ Responds with status 200 if the post request was successful. Either signs a user
 #### Example Response
 `ok`
 
-### `GET no_events`
-Returns the website display string for the instance where there are no events for a college
-#### Resource URL
-`https://formality.eu-gb.cf.appdomain.cloud/no_events`
-#### Resource Information
-| Detail | Info |
-| --- | --- |
-| Response format | String |
-| Requires authentication? | No |
-| Requires admin privilege? | No |
-#### Parameters
-none
-#### Example Request
-`GET https://formality.eu-gb.cf.appdomain.cloud/no_events`
-#### Example Response
-`<p>There are currently no events for this college</p>`
-
 ## Admin Event Actions
 
 ### `GET admin/:col`

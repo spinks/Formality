@@ -71,16 +71,6 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 
-app.get('/home', function (req, res) {
-    var home = {
-        'nav-college-name': 'College',
-        'content_above': '',
-        'content': '<div class="body-padded"> <p class= "lead"> Essential Formal and Ball Signup</p> <p>Choose a college and sign in to get started</p></div>',
-        'content_footer': ''
-    };
-    res.send(home);
-});
-
 app.get('/college', function (req, res) {
     var college_dict = {};
     for (var key in events) {
@@ -164,8 +154,6 @@ app.get('/college/:col/:event', [isCollege, isEvent], async function (req, res) 
 });
 
 app.post('/college/:col/:event', [isCollege, tokenHandler, isEvent], async function (req, res) {
-    // body contains -> view (true/false), signup (true/false optional)
-    // idtoken (string optional (will return 403 if signup true) -> for verification / view permissions)
     var event = events[req.params.col]['array'][req.params.event];
     var payload = req.formality_payload;
     if (payload.userid in event['users']) {
@@ -179,11 +167,6 @@ app.post('/college/:col/:event', [isCollege, tokenHandler, isEvent], async funct
     }
     // fs.writeFileSync('./events.json', JSON.stringify(events));
     res.end('ok');
-});
-
-app.get('/no_events', async function (req, res) {
-    var no_events = '<p>There are currently no events for this college</p>';
-    res.send(no_events);
 });
 
 app.get('/admin/:col', [isCollege], async function (req, res, next) {
@@ -211,7 +194,7 @@ app.get('/admin/:col', [isCollege], async function (req, res, next) {
         var userid = req.formality_payload.userid;
         if (events[req.params.col]['admins'].includes(userid)) {
             return res.send('true');
-        } 
+        }
     }
     return res.send('false');
 });
@@ -308,7 +291,7 @@ app.post('/gtokenin', async function (req, res) {
         if (req.body.api_verify !== true || req.body.api_verify === undefined) {
             payload = await verify(req.body.idtoken);
         } else {
-            var response = await fetch('https://oauth2.googleapis.com/tokeninfo?id_token='+req.body.idtoken);
+            var response = await fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + req.body.idtoken);
             var body = await response.text();
             if (response.status == 200) {
                 payload = await JSON.parse(body);

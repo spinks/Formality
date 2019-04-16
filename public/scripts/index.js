@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
             alert(e);
         }
     }
-
     buildDropMenu();
 
     document.getElementById('navbarDropdownMenuCollege').addEventListener('click', async function (event) {
@@ -43,20 +42,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('navbarBrand').addEventListener('click', async function () {
-        try {
-            lastPageRequest = 'home';
-            let response = await fetch('/home');
-            let body = await response.text();
-            body = await JSON.parse(body);
-            if (response.status != 200) {
-                throw body;
-            }
-            for (var key in body) {
-                document.getElementById(key).innerHTML = body[key];
-            }
-        } catch (e) {
-            alert(e);
-        }
+        lastPageRequest = 'home';
+        document.getElementById('nav-college-name').innerHTML = 'College';
+        document.getElementById('content_above').innerHTML = '';
+        document.getElementById('content').innerHTML = '<div class="body-padded"> <p class= "lead"> Essential Formal and Ball Signup</p> <p>Choose a college and sign in to get started</p></div>';
+        document.getElementById('content_footer').innerHTML = '';
     });
 
     document.getElementById('google-signout').addEventListener('click', async function (event) {
@@ -142,10 +132,8 @@ async function genAdminTable(college) {
     try {
         var no_events = false;
         if (number_events.length === 0) {
-            response = await fetch('/no_events');
-            var table = await response.text();
             no_events = true;
-            document.getElementById('content').innerHTML = body;
+            document.getElementById('content').innerHTML = '<p>There are currently no events for this college</p>';
         }
         if (no_events === false) {
             table = '<table class="table" id="eventTable"><thead><tr>' +
@@ -302,9 +290,7 @@ async function genTable(college, number_events) {
             document.getElementById('content_footer').innerHTML = '';
         }
         if (number_events.length === 0) {
-            var response = await fetch('/no_events');
-            var body = await response.text();
-            document.getElementById('content').innerHTML = body;
+            document.getElementById('content').innerHTML = '<p>There are currently no events for this college</p>';
         }
         else {
             var table = '<table class="table" id="eventTable"><thead><tr>' +
@@ -317,8 +303,6 @@ async function genTable(college, number_events) {
                 let response = await fetch('college/' + college + '/' + number_events[i].toString());
                 let event = await response.text();
                 if (response.status != 200) {
-                    // could force a singn out here for invalid credemtials
-                    // await signOut();
                     throw event;
                 }
                 event = await JSON.parse(event);

@@ -9,8 +9,8 @@
             "1": {
                 "event": "Tuesday Formal",
                 "date": "19/6",
-                "space": 1,
-                "total_space": 5000,
+                "space": 6,
+                "total_space": 80,
                 "users": {}
             },
             "2": {
@@ -36,7 +36,9 @@
     },
     "university": {
         "college_name": "University",
-        "admins": [],
+        "admins": [
+            "115005864354092305495"
+        ],
         "array": {
             "1": {
                 "event": "June Ball",
@@ -51,6 +53,13 @@
     },
     "st_cuthberts": {
         "college_name": "St Cuthbert's",
+        "admins": [
+            "115005864354092305495"
+        ],
+        "array": {}
+    },
+    "st_marys": {
+        "college_name": "St Mary's",
         "admins": [
             "115005864354092305495"
         ],
@@ -92,8 +101,71 @@
             }
         }
     },
-    "st_marys": {
-        "college_name": "St Mary's",
+    "st_aidans": {
+        "college_name": "St Aidan's",
+        "admins": [
+            "115005864354092305495"
+        ],
+        "array": {}
+    },
+    "grey": {
+        "college_name": "Grey",
+        "admins": [
+            "115005864354092305495"
+        ],
+        "array": {}
+    },
+    "ustinov": {
+        "college_name": "Ustinov",
+        "admins": [
+            "115005864354092305495"
+        ],
+        "array": {}
+    },
+    "van_mildert": {
+        "college_name": "Van Mildert",
+        "admins": [
+            "115005864354092305495"
+        ],
+        "array": {}
+    },
+    "trevelyan": {
+        "college_name": "Trevelyan",
+        "admins": [
+            "115005864354092305495"
+        ],
+        "array": {}
+    },
+    "Collingwood": {
+        "college_name": "Collingwood",
+        "admins": [
+            "115005864354092305495"
+        ],
+        "array": {}
+    },
+    "st_hild_st_bede": {
+        "college_name": "St Hild and St Bede",
+        "admins": [
+            "115005864354092305495"
+        ],
+        "array": {}
+    },
+    "stephenson": {
+        "college_name": "Stephenson",
+        "admins": [
+            "115005864354092305495"
+        ],
+        "array": {}
+    },
+    "john_snow": {
+        "college_name": "John Snow",
+        "admins": [
+            "115005864354092305495"
+        ],
+        "array": {}
+    },
+    "josephine_butler": {
+        "college_name": "Josephine Butler",
         "admins": [
             "115005864354092305495"
         ],
