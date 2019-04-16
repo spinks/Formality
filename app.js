@@ -186,8 +186,34 @@ app.get('/no_events', async function (req, res) {
     res.send(no_events);
 });
 
-app.get('/admin/:col', [isCollege, tokenHandler, isAdmin], async function (req, res) {
-    return res.send('ok');
+app.get('/admin/:col', [isCollege], async function (req, res, next) {
+    if (req.cookies.jwtoken !== undefined || req.cookies.jwrefresh !== undefined) {
+        try {
+            req.formality_payload = await jwt.verify(req.cookies.jwtoken, secret, { algorithms: 'HS256' });
+        } catch (e) {
+            if (req.cookies.jwrefresh === undefined) {
+                return res.send('false');
+            }
+            if (e.name === 'TokenExpiredError' || e.name === 'JsonWebTokenError') {
+                var refreshed = await refreshToken(req.cookies.jwrefresh);
+                if (refreshed !== null) {
+                    req.formality_payload = await jwt.verify(refreshed, secret, { algorithms: 'HS256' });
+                    res.cookie('jwtoken', refreshed);
+                    return next();
+                } else {
+                    res.clearCookie('jwtoken');
+                    return res.status(403).send('unable to refresh tokens');
+                }
+            } else {
+                return res.status(403).send(e.message);
+            }
+        }
+        var userid = req.formality_payload.userid;
+        if (events[req.params.col]['admins'].includes(userid)) {
+            return res.send('true');
+        } 
+    }
+    return res.send('false');
 });
 
 function eventAssertions(body) {

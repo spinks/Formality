@@ -291,7 +291,8 @@ async function genAdminTable(college) {
 async function genTable(college, number_events) {
     try {
         var admin = await fetch('/admin/' + lastPageRequestCollege);
-        if (admin.status === 200) {
+        admin = await admin.text();
+        if (admin === 'true') {
             document.getElementById('content_footer').innerHTML = '<button type="submit" id="admin" class="btn btn-secondary">admin - modify events</button>';
             document.getElementById('admin').addEventListener('click', async function (event) {
                 event.preventDefault();

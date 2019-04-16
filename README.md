@@ -140,7 +140,7 @@ none
 ## Admin Event Actions
 
 ### `GET admin/:col`
-Responds with status 200 if the authenticated user is an administrator for the given college, else 403
+Responds with `true` if the authenticated user is an administrator for the given college, else `false`
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/admin/:col`
 #### Resource Information
@@ -148,7 +148,7 @@ Responds with status 200 if the authenticated user is an administrator for the g
 | --- | --- |
 | Response format | String |
 | Requires authentication? | Yes |
-| Requires admin privilege? | Yes |
+| Requires admin privilege? | No |
 #### Parameters
 | Name | Required | Description | Default | Example |
 | --- | --- | --- | --- | --- |
@@ -159,9 +159,9 @@ Responds with status 200 if the authenticated user is an administrator for the g
 `GET https://formality.eu-gb.cf.appdomain.cloud/admin/hatfield`
 #### Example Response
 If passed tokens signify user is an admin,
-`ok`
+`true`
 else,
-`not an admin`
+`false`
 
 ### `POST admin/:col/e/:event`
 Responds with status 200 if the post request was successful. Allows for editing of event details, which are passed in the post request body. Edits the event id in the url.
