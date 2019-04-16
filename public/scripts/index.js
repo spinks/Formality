@@ -136,7 +136,7 @@ async function genAdminTable(college) {
             document.getElementById('content').innerHTML = '<p>There are currently no events for this college</p>';
         }
         if (no_events === false) {
-            table = '<table class="table" id="eventTable"><thead><tr>' +
+            var table = '<table class="table" id="eventTable"><thead><tr>' +
                 '<th scope="col">Event</th>' +
                 '<th scope="col">Date</th>' +
                 '<th scope="col">Available Places</th>' +
