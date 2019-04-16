@@ -28,6 +28,7 @@ Allows the user to get an object with all colleges, keys are the internal ids an
 | --- | --- |
 | Response format | JSON |
 | Requires authentication? | No |
+| Requires admin privilege? | No |
 #### Parameters
 None
 #### Example Request
@@ -44,6 +45,7 @@ Responds with an object containing the college display name and a list of event 
 | --- | --- |
 | Response format | JSON |
 | Requires authentication? | No |
+| Requires admin privilege? | No |
 #### Parameters
 | Name | Required | Description | Default | Example |
 | --- | --- |
@@ -62,6 +64,7 @@ Responds with an object containing the college display name and a list of event 
 | --- | --- |
 | Response format | JSON |
 | Requires authentication? | No |
+| Requires admin privilege? | No |
 #### Parameters
 | Name | Required | Description | Default | Example |
 | --- | --- |
@@ -82,20 +85,21 @@ Responds with an object containing detailed information about an event. If a jwt
 | --- | --- |
 | Response format | JSON |
 | Requires authentication? | No |
+| Requires admin privilege? | No |
 #### Parameters
 | Name | Required | Description | Default | Example |
 | --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
-| jwtoken (cookie) | no | The cookied value of a login token | none | a long alphanumeric key |
-| jwrefresh (cookie) | no | The cookied value of a login refresh token | none | a long alphanumeric key |
+| jwtoken (cookie) | no | The cookie value of a login token | none | a long alphanumeric key |
+| jwrefresh (cookie) | no | The cookie value of a login refresh token | none | a long alphanumeric key |
 #### Example Request
 `GET https://formality.eu-gb.cf.appdomain.cloud/college/hatfield/1`
 #### Example Response
 `{"event":"Tuesday Formal","date":"19/6","space":6,"total_space":80,"button_status":"default"}`
 
 ### `POST college/:col/:event`
-Responds with status 200 if the post request was sucsessful. Either signs a user up to an event if not already or vice-versa.
+Responds with status 200 if the post request was successful. Either signs a user up to an event if not already or vice-versa.
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/college/:col/:event`
 #### Resource Information
@@ -103,13 +107,14 @@ Responds with status 200 if the post request was sucsessful. Either signs a user
 | --- | --- |
 | Response format | String |
 | Requires authentication? | No |
+| Requires admin privilege? | No |
 #### Parameters
 | Name | Required | Description | Default | Example |
 | --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
-| jwtoken (cookie) | yes (not if refresh token passed) | The cookied value of a login token | none | a long alphanumeric key |
-| jwrefresh (cookie) | yes | The cookied value of a login refresh token | none | a long alphanumeric key |
+| jwtoken (cookie) | yes (not if refresh token passed) | The cookie value of a login token | none | a long alphanumeric key |
+| jwrefresh (cookie) | yes | The cookie value of a login refresh token | none | a long alphanumeric key |
 #### Example Request
 `POST https://formality.eu-gb.cf.appdomain.cloud/college/hatfield/1`
 #### Example Response
@@ -124,6 +129,7 @@ Returns the website display string for the instance where there are no events fo
 | --- | --- |
 | Response format | String |
 | Requires authentication? | No |
+| Requires admin privilege? | No |
 #### Parameters
 none
 #### Example Request
@@ -134,7 +140,7 @@ none
 ## Admin Event Actions
 
 ### `GET admin/:col`
-Responds with status 200 if the authenticated user is an adminstrator for the given college, else 403
+Responds with status 200 if the authenticated user is an administrator for the given college, else 403
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/admin/:col`
 #### Resource Information
@@ -142,12 +148,13 @@ Responds with status 200 if the authenticated user is an adminstrator for the gi
 | --- | --- |
 | Response format | String |
 | Requires authentication? | Yes |
+| Requires admin privilege? | Yes |
 #### Parameters
 | Name | Required | Description | Default | Example |
 | --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
-| jwtoken (cookie) | yes (not if refresh token passed) | The cookied value of a login token | none | a long alphanumeric key |
-| jwrefresh (cookie) | yes | The cookied value of a login refresh token | none | a long alphanumeric key |
+| jwtoken (cookie) | yes (not if refresh token passed) | The cookie value of a login token | none | a long alphanumeric key |
+| jwrefresh (cookie) | yes | The cookie value of a login refresh token | none | a long alphanumeric key |
 #### Example Request
 `GET https://formality.eu-gb.cf.appdomain.cloud/admin/hatfield`
 #### Example Response
@@ -157,7 +164,7 @@ else,
 `not an admin`
 
 ### `POST admin/:col/e/:event`
-Responds with status 200 if the post request was sucsessful. Allows for editing of event details, which are passed in the post request body. Edits the event id in the url.
+Responds with status 200 if the post request was successful. Allows for editing of event details, which are passed in the post request body. Edits the event id in the url.
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/admin/:col/e/:event`
 #### Resource Information
@@ -165,6 +172,7 @@ Responds with status 200 if the post request was sucsessful. Allows for editing 
 | --- | --- |
 | Response format | String |
 | Requires authentication? | Yes |
+| Requires admin privilege? | Yes |
 #### Parameters
 | Name | Required | Description | Default | Example |
 | --- | --- | --- | --- | --- |
@@ -172,17 +180,17 @@ Responds with status 200 if the post request was sucsessful. Allows for editing 
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
 | event (body) | yes | New event name, string | none | `Formal` |
 | date (body) | yes | New event date, string | none | `5/8` |
-| space (body) | yes | New event avaliable spaces, int | none | `20` |
+| space (body) | yes | New event available spaces, int | none | `20` |
 | total_space (body) | yes | New event total spaces, int | none | `80` |
-| jwtoken (cookie) | yes (not if refresh token passed) | The cookied value of a login token | none | a long alphanumeric key |
-| jwrefresh (cookie) | yes | The cookied value of a login refresh token | none | a long alphanumeric key |
+| jwtoken (cookie) | yes (not if refresh token passed) | The cookie value of a login token | none | a long alphanumeric key |
+| jwrefresh (cookie) | yes | The cookie value of a login refresh token | none | a long alphanumeric key |
 #### Example Request
 `POST https://formality.eu-gb.cf.appdomain.cloud/admin/hatfield/e/1 --body={'event': 'Formal", 'date': '5/8 'space': 20, 'total_space': 80}`
 #### Example Response
 `ok`
 
 ### `DELETE admin/:col/d/:event`
-Responds with status 200 if the post request was sucsessful. Allows for deleting of events. Deletes the event with id passed in the url.
+Responds with status 200 if the post request was successful. Allows for deleting of events. Deletes the event with id passed in the url.
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/admin/:col/d/:event`
 #### Resource Information
@@ -190,20 +198,21 @@ Responds with status 200 if the post request was sucsessful. Allows for deleting
 | --- | --- |
 | Response format | String |
 | Requires authentication? | Yes |
+| Requires admin privilege? | Yes |
 #### Parameters
 | Name | Required | Description | Default | Example |
 | --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
-| jwtoken (cookie) | yes (not if refresh token passed) | The cookied value of a login token | none | a long alphanumeric key |
-| jwrefresh (cookie) | yes | The cookied value of a login refresh token | none | a long alphanumeric key |
+| jwtoken (cookie) | yes (not if refresh token passed) | The cookie value of a login token | none | a long alphanumeric key |
+| jwrefresh (cookie) | yes | The cookie value of a login refresh token | none | a long alphanumeric key |
 #### Example Request
 `DELETE https://formality.eu-gb.cf.appdomain.cloud/admin/hatfield/d/1`
 #### Example Response
 `ok`
 
-### `POST admin/:col/c/:event`
-Responds with status 201 if the post request was sucsessful. Allows for creating of new events.
+### `POST admin/:col/c`
+Responds with status 201 if the post request was successful. Allows for creating of new events.
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/admin/:col/c`
 #### Resource Information
@@ -211,17 +220,17 @@ Responds with status 201 if the post request was sucsessful. Allows for creating
 | --- | --- |
 | Response format | String |
 | Requires authentication? | Yes |
+| Requires admin privilege? | Yes |
 #### Parameters
 | Name | Required | Description | Default | Example |
 | --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
-| event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
 | event (body) | yes | New event name, string | none | `Formal` |
 | date (body) | yes | New event date, string | none | `5/8` |
-| space (body) | yes | New event avaliable spaces, int | none | `20` |
+| space (body) | yes | New event available spaces, int | none | `20` |
 | total_space (body) | yes | New event total spaces, int | none | `80` |
-| jwtoken (cookie) | yes (not if refresh token passed) | The cookied value of a login token | none | a long alphanumeric key |
-| jwrefresh (cookie) | yes | The cookied value of a login refresh token | none | a long alphanumeric key |
+| jwtoken (cookie) | yes (not if refresh token passed) | The cookie value of a login token | none | a long alphanumeric key |
+| jwrefresh (cookie) | yes | The cookie value of a login refresh token | none | a long alphanumeric key |
 #### Example Request
 `POST https://formality.eu-gb.cf.appdomain.cloud/admin/hatfield/c --body={'event': 'Formal", 'date': '5/8 'space': 20, 'total_space': 80}`
 #### Example Response
@@ -236,13 +245,14 @@ Responds with an object containing the user emails as keys and user names as val
 | --- | --- |
 | Response format | JSON |
 | Requires authentication? | Yes |
+| Requires admin privilege? | Yes |
 #### Parameters
 | Name | Required | Description | Default | Example |
 | --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
-| jwtoken (cookie) | yes (not if refresh token passed) | The cookied value of a login token | none | a long alphanumeric key |
-| jwrefresh (cookie) | yes | The cookied value of a login refresh token | none | a long alphanumeric key |
+| jwtoken (cookie) | yes (not if refresh token passed) | The cookie value of a login token | none | a long alphanumeric key |
+| jwrefresh (cookie) | yes | The cookie value of a login refresh token | none | a long alphanumeric key |
 #### Example Request
 `POST https://formality.eu-gb.cf.appdomain.cloud/admin/hatfield/u/1`
 #### Example Response
@@ -250,7 +260,7 @@ Responds with an object containing the user emails as keys and user names as val
 
 ## Authentication
 ### `POST gtokenin`
-Responds with status 200 if the passed idtoken was able to be verified with the Google API. Also in response are cookied the jwtoken and jwrefresh token. The jwtoken expires in 10 minutes, however on other routes if the jwrefresh token is passed it will generate and cookie a new jwtoken, and continue with the original request. 
+Responds with status 200 if the passed idtoken was able to be verified with the Google API. Also in response the jwtoken and jwrefresh token are returned in the Set-Cookie header. The jwtoken expires in 10 minutes, however on other routes if the jwrefresh token is passed it will generate and cookie a new jwtoken, and continue with the original request. 
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/gtokenin`
 #### Resource Information
@@ -258,16 +268,16 @@ Responds with status 200 if the passed idtoken was able to be verified with the 
 | --- | --- |
 | Response format | String |
 | Requires authentication? | Yes |
+| Requires admin privilege? | No |
 #### Parameters
 | Name | Required | Description | Default | Example |
 | --- | --- | --- | --- | --- |
-| col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
-| event | yes | Event id (ids found in `GET college/col` or the query version) | none | `1` |
 | idtoken | yes | An id token given to the client from the Google sign-in API | none | an alphanumeric key |
+| api_verify | no | A boolean, if true the backend will verify with Google API rather than with their library | `false` | `true`
 #### Example Request
-`POST https://formality.eu-gb.cf.appdomain.cloud/gtokenin --body='idtoken=123...'`
+`POST https://formality.eu-gb.cf.appdomain.cloud/gtokenin --body={'idtoken':'123...'}`
 #### Example Response
-`ok` and the jwtoken and jwrefresh which are cookied by the response.
+`ok` and the jwtoken and jwrefresh which are set as cookies by the response.
 
 ### `POST gtokenout`
 Logout protocol. Removes the jwrefresh token from the database and clears the browser cookies in the response.
@@ -278,6 +288,7 @@ Logout protocol. Removes the jwrefresh token from the database and clears the br
 | --- | --- |
 | Response format | String |
 | Requires authentication? | No |
+| Requires admin privilege? | No |
 #### Parameters
 none
 #### Example Request
