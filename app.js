@@ -1,8 +1,8 @@
 var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
-var fs = require('fs');
-
+// var fs = require('fs');
+var fetch = require('node-fetch');
 var jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var secret = 'secretcode';
@@ -177,7 +177,7 @@ app.post('/college/:col/:event', [isCollege, tokenHandler, isEvent], async funct
             'username': payload.name, 'email': payload.email
         };
     }
-    fs.writeFileSync('./events.json', JSON.stringify(events));
+    // fs.writeFileSync('./events.json', JSON.stringify(events));
     res.end('ok');
 });
 
@@ -216,7 +216,6 @@ app.post('/admin/:col/e/:event', [isCollege, tokenHandler, isAdmin, isEvent], as
     event['date'] = req.body.date;
     event['space'] = req.body.space;
     event['total_space'] = req.body.total_space;
-    fs.writeFileSync('./events.json', JSON.stringify(events));
     return res.send('ok');
 });
 
@@ -225,11 +224,10 @@ app.delete('/admin/:col/d/:event', [isCollege, tokenHandler, isAdmin, isEvent], 
         return res.status(400).send('invalid event number');
     }
     delete events[req.params.col]['array'][req.params.event];
-    fs.writeFileSync('./events.json', JSON.stringify(events));
     return res.send('ok');
 });
 
-app.post('/admin/:col/c', [isCollege, tokenHandler, isAdmin, isEvent], async function (req, res) {
+app.post('/admin/:col/c', [isCollege, tokenHandler, isAdmin], async function (req, res) {
     if (!eventAssertions(req.body)) {
         return res.status(400).send('invalid event details');
     }
@@ -241,7 +239,6 @@ app.post('/admin/:col/c', [isCollege, tokenHandler, isAdmin, isEvent], async fun
     newid = String(newid);
     events[req.params.col]['array'][newid] = req.body;
     events[req.params.col]['array'][newid]['users'] = {};
-    fs.writeFileSync('./events.json', JSON.stringify(events));
     return res.status(201).send('ok');
 });
 
@@ -281,8 +278,21 @@ async function verify(gtoken) {
 }
 
 app.post('/gtokenin', async function (req, res) {
-    var token = req.body['idtoken'];
-    payload = await verify(token).catch(e => { return res.status(403).send(e); });
+    try {
+        if (req.body.api_verify !== true || req.body.api_verify === undefined) {
+            payload = await verify(req.body.idtoken);
+        } else {
+            var response = await fetch('https://oauth2.googleapis.com/tokeninfo?id_token='+req.body.idtoken);
+            var body = await response.text();
+            if (response.status == 200) {
+                payload = await JSON.parse(body);
+            } else {
+                throw new Error(body);
+            }
+        }
+    } catch (e) {
+        return res.status(403).send(e);
+    }
     var jwtoken = jwt.sign({
         userid: payload.sub,
         name: payload.name,

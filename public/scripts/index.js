@@ -372,9 +372,9 @@ async function onSignIn(googleUser) { // eslint-disable-line
         var response = await fetch('/gtokenin', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json'
             },
-            body: 'idtoken=' + id_token,
+            body: JSON.stringify({ 'idtoken': id_token }),
         });
         let body = await response.text();
         if (response.status != 200) {

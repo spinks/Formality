@@ -12,13 +12,16 @@
   "license": "ISC",
   "devDependencies": {
     "eslint": "^5.14.1",
+    "expect-cookies": "^0.1.2",
     "jest": "^24.3.1",
+    "nock": "^10.0.6",
     "supertest": "3.4.2"
   },
   "dependencies": {
     "cookie-parser": "^1.4.4",
     "express": "^4.16.4",
     "google-auth-library": "^3.1.0",
-    "jsonwebtoken": "^8.5.1"
+    "jsonwebtoken": "^8.5.1",
+    "node-fetch": "^2.3.0"
   }
 }

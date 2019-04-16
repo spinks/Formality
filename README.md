@@ -181,8 +181,8 @@ Responds with status 200 if the post request was sucsessful. Allows for editing 
 #### Example Response
 `ok`
 
-### `POST admin/:col/d/:event`
-Responds with status 200 if the post request was sucsessful. Allows for deleting of events. Delets the event with id passed in the url.
+### `DELETE admin/:col/d/:event`
+Responds with status 200 if the post request was sucsessful. Allows for deleting of events. Deletes the event with id passed in the url.
 #### Resource URL
 `https://formality.eu-gb.cf.appdomain.cloud/admin/:col/d/:event`
 #### Resource Information
@@ -198,7 +198,7 @@ Responds with status 200 if the post request was sucsessful. Allows for deleting
 | jwtoken (cookie) | yes (not if refresh token passed) | The cookied value of a login token | none | a long alphanumeric key |
 | jwrefresh (cookie) | yes | The cookied value of a login refresh token | none | a long alphanumeric key |
 #### Example Request
-`POST https://formality.eu-gb.cf.appdomain.cloud/admin/hatfield/d/1`
+`DELETE https://formality.eu-gb.cf.appdomain.cloud/admin/hatfield/d/1`
 #### Example Response
 `ok`
 
