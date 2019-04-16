@@ -48,7 +48,7 @@ Responds with an object containing the college display name and a list of event 
 | Requires admin privilege? | No |
 #### Parameters
 | Name | Required | Description | Default | Example |
-| --- | --- |
+| --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 #### Example Request
 `GET https://formality.eu-gb.cf.appdomain.cloud/college/university`
@@ -67,7 +67,7 @@ Responds with an object containing the college display name and a list of event 
 | Requires admin privilege? | No |
 #### Parameters
 | Name | Required | Description | Default | Example |
-| --- | --- |
+| --- | --- | --- | --- | --- |
 | col | yes | The internal id string of a college (as per keys in `GET college`) | none | `university` |
 | query | yes | A query string | none | `formal` |
 #### Example Request
