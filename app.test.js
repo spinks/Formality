@@ -325,8 +325,8 @@ describe('Test college admin events', () => {
     it('GET /admin/hatfield has correct response (fails)', () => {
         return agent
             .get('/admin/hatfield')
-            .expect(403)
-            .expect(/not an admin/);
+            .expect(200)
+            .expect(/false/);
     });
     it('POST /admin/hatfield/c has correct response (fails)', () => {
         return agent
@@ -364,6 +364,7 @@ describe('Test college admin events', () => {
         return agent
             .get('/admin/hatfield')
             .expect(200)
+            .expect(/true/)
     });
 
     it('POST /admin/hatfield/c with invalid event details fails (0 total spaces)', () => {
