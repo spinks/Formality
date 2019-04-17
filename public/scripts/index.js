@@ -260,7 +260,7 @@ async function genAdminTable(college) {
                         'Content-Type': 'application/json'
                     }
                 });
-                if (response.status != 200) {
+                if (response.status != 201) {
                     let body = await response.text();
                     throw body;
                 }
