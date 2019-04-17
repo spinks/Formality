@@ -130,13 +130,13 @@ async function genAdminTable(college) {
     body = await JSON.parse(body);
     var number_events = body.number_events;
     try {
+        var table;
         var no_events = false;
         if (number_events.length === 0) {
             no_events = true;
-            document.getElementById('content').innerHTML = '<p>There are currently no events for this college</p>';
-        }
-        if (no_events === false) {
-            var table = '<table class="table" id="eventTable"><thead><tr>' +
+            table = '<p>There are currently no events for this college</p>';
+        } else {
+            table = '<table class="table" id="eventTable"><thead><tr>' +
                 '<th scope="col">Event</th>' +
                 '<th scope="col">Date</th>' +
                 '<th scope="col">Available Places</th>' +
