@@ -97,13 +97,13 @@ describe('Test college general info (and college id validation middleware)', () 
     it('GET /college/hatfield/s/formal has 2 results', () => {
         return request(app)
             .get('/college/hatfield/s/formal')
-            .expect(function (res) { if (res.body['number_events'].length !== 2) { throw new Error('incorrect size') } });
+            .expect(function (res) { if (res.body['number_events'].length !== 2) { throw new Error('incorrect size'); } });
     });
 
     it('GET /college/hatfield/s/notinevents has no results', () => {
         return request(app)
             .get('/college/hatfield/s/notinevents')
-            .expect(function (res) { if (res.body['number_events'].length !== 0) { throw new Error('incorrect size') } });
+            .expect(function (res) { if (res.body['number_events'].length !== 0) { throw new Error('incorrect size'); } });
     });
 
 });
@@ -174,19 +174,19 @@ describe('Test authentication actions', () => {
         nock('https://oauth2.googleapis.com').get('/tokeninfo?id_token=valid')
             .reply(200, JSON.stringify({
                 // This is a sample API response for mocking
-                "iss": "https://accounts.google.com",
-                "sub": "110169484474386276334",
-                "azp": "1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com",
-                "aud": "1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com",
-                "iat": "1433978353",
-                "exp": "1433981953",
-                "email": "testuser@gmail.com",
-                "email_verified": "true",
-                "name": "Test User",
-                "picture": "https://lh4.googleusercontent.com/-kYgzyAWpZzJ/ABCDEFGHI/AAAJKLMNOP/tIXL9Ir44LE/s99-c/photo.jpg",
-                "given_name": "Test",
-                "family_name": "User",
-                "locale": "en"
+                'iss': 'https://accounts.google.com',
+                'sub': '110169484474386276334',
+                'azp': '1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com',
+                'aud': '1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com',
+                'iat': '1433978353',
+                'exp': '1433981953',
+                'email': 'testuser@gmail.com',
+                'email_verified': 'true',
+                'name': 'Test User',
+                'picture': 'https://lh4.googleusercontent.com/-kYgzyAWpZzJ/ABCDEFGHI/AAAJKLMNOP/tIXL9Ir44LE/s99-c/photo.jpg',
+                'given_name': 'Test',
+                'family_name': 'User',
+                'locale': 'en'
             }));
 
         nock('https://oauth2.googleapis.com').get('/tokeninfo?id_token=invalid')
@@ -197,34 +197,34 @@ describe('Test authentication actions', () => {
         return agent
             .post('/gtokenin')
             .send({ 'idtoken': 'valid', 'api_verify': true })
-            .expect(200)
+            .expect(200);
     });
 
     it('POST /gtokenin with invalid idtoken fails', () => {
         return agent
             .post('/gtokenin')
             .send({ 'idtoken': 'invalid', 'api_verify': true })
-            .expect(403)
+            .expect(403);
     });
 
     it('POST /gtokenin sets jwtoken cookie', () => {
         return agent
             .post('/gtokenin')
             .send({ 'idtoken': 'valid', 'api_verify': true })
-            .expect(Cookies.set({ 'name': 'jwtoken' }))
+            .expect(Cookies.set({ 'name': 'jwtoken' }));
     });
 
     it('POST /gtokenin sets jwrefresh cookie', () => {
         return agent
             .post('/gtokenin')
             .send({ 'idtoken': 'valid', 'api_verify': true })
-            .expect(Cookies.set({ 'name': 'jwrefresh' }))
+            .expect(Cookies.set({ 'name': 'jwrefresh' }));
     });
 
     it('POST /gtokenout clears cookies', () => {
         return agent
             .post('/gtokenout')
-            .expect(Cookies.reset([{ 'name': 'jwrefresh' }, { 'name': 'jwtoken' }]))
+            .expect(Cookies.reset([{ 'name': 'jwrefresh' }, { 'name': 'jwtoken' }]));
     });
 });
 
@@ -235,44 +235,44 @@ describe('Test sign up to events', () => {
         nock('https://oauth2.googleapis.com').get('/tokeninfo?id_token=valid')
             .reply(200, JSON.stringify({
                 // This is a sample API response for mocking
-                "iss": "https://accounts.google.com",
-                "sub": "110169484474386276334",
-                "azp": "1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com",
-                "aud": "1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com",
-                "iat": "1433978353",
-                "exp": "1433981953",
-                "email": "testuser@gmail.com",
-                "email_verified": "true",
-                "name": "Test User",
-                "picture": "https://lh4.googleusercontent.com/-kYgzyAWpZzJ/ABCDEFGHI/AAAJKLMNOP/tIXL9Ir44LE/s99-c/photo.jpg",
-                "given_name": "Test",
-                "family_name": "User",
-                "locale": "en"
+                'iss': 'https://accounts.google.com',
+                'sub': '110169484474386276334',
+                'azp': '1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com',
+                'aud': '1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com',
+                'iat': '1433978353',
+                'exp': '1433981953',
+                'email': 'testuser@gmail.com',
+                'email_verified': 'true',
+                'name': 'Test User',
+                'picture': 'https://lh4.googleusercontent.com/-kYgzyAWpZzJ/ABCDEFGHI/AAAJKLMNOP/tIXL9Ir44LE/s99-c/photo.jpg',
+                'given_name': 'Test',
+                'family_name': 'User',
+                'locale': 'en'
             }));
     });
 
     it('POST /college/hatfield/1 fails while agent not logged in', () => {
         return agent
             .post('/college/hatfield/1')
-            .expect(403)
-    })
+            .expect(403);
+    });
 
     it('Get login tokens', () => {
         return agent
             .post('/gtokenin')
             .send({ 'idtoken': 'valid', 'api_verify': true })
-            .expect(200)
+            .expect(200);
     });
 
     it('POST /college/hatfield/1 succeeds with agent logged in', () => {
         return agent
             .post('/college/hatfield/1')
-            .expect(200)
-    })
+            .expect(200);
+    });
 
     // it('POST /college/hatfield/1')
 
-})
+});
 
 describe('Test college admin events', () => {
     var agent = request.agent(app);
@@ -281,37 +281,37 @@ describe('Test college admin events', () => {
         nock('https://oauth2.googleapis.com').get('/tokeninfo?id_token=valid_admin')
             .reply(200, JSON.stringify({
                 // This is a sample API response for mocking
-                "iss": "https://accounts.google.com",
-                "sub": "test_admin",
-                "azp": "1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com",
-                "aud": "1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com",
-                "iat": "1433978353",
-                "exp": "1433981953",
-                "email": "admin@gmail.com",
-                "email_verified": "true",
-                "name": "Admin Name",
-                "picture": "https://lh4.googleusercontent.com/-kYgzyAWpZzJ/ABCDEFGHI/AAAJKLMNOP/tIXL9Ir44LE/s99-c/photo.jpg",
-                "given_name": "Admin",
-                "family_name": "Name",
-                "locale": "en"
+                'iss': 'https://accounts.google.com',
+                'sub': 'test_admin',
+                'azp': '1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com',
+                'aud': '1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com',
+                'iat': '1433978353',
+                'exp': '1433981953',
+                'email': 'admin@gmail.com',
+                'email_verified': 'true',
+                'name': 'Admin Name',
+                'picture': 'https://lh4.googleusercontent.com/-kYgzyAWpZzJ/ABCDEFGHI/AAAJKLMNOP/tIXL9Ir44LE/s99-c/photo.jpg',
+                'given_name': 'Admin',
+                'family_name': 'Name',
+                'locale': 'en'
             }));
 
         nock('https://oauth2.googleapis.com').get('/tokeninfo?id_token=invalid_admin')
             .reply(200, JSON.stringify({
                 // This is a sample API response for mocking
-                "iss": "https://accounts.google.com",
-                "sub": "110169484474386276334",
-                "azp": "1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com",
-                "aud": "1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com",
-                "iat": "1433978353",
-                "exp": "1433981953",
-                "email": "testuser@gmail.com",
-                "email_verified": "true",
-                "name": "Test User",
-                "picture": "https://lh4.googleusercontent.com/-kYgzyAWpZzJ/ABCDEFGHI/AAAJKLMNOP/tIXL9Ir44LE/s99-c/photo.jpg",
-                "given_name": "Test",
-                "family_name": "User",
-                "locale": "en"
+                'iss': 'https://accounts.google.com',
+                'sub': '110169484474386276334',
+                'azp': '1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com',
+                'aud': '1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com',
+                'iat': '1433978353',
+                'exp': '1433981953',
+                'email': 'testuser@gmail.com',
+                'email_verified': 'true',
+                'name': 'Test User',
+                'picture': 'https://lh4.googleusercontent.com/-kYgzyAWpZzJ/ABCDEFGHI/AAAJKLMNOP/tIXL9Ir44LE/s99-c/photo.jpg',
+                'given_name': 'Test',
+                'family_name': 'User',
+                'locale': 'en'
             }));
     });
 
@@ -319,7 +319,7 @@ describe('Test college admin events', () => {
         return agent
             .post('/gtokenin')
             .send({ 'idtoken': 'invalid_admin', 'api_verify': true })
-            .expect(200)
+            .expect(200);
     });
 
     it('GET /admin/hatfield has correct response (fails)', () => {
@@ -357,14 +357,14 @@ describe('Test college admin events', () => {
         return agent
             .post('/gtokenin')
             .send({ 'idtoken': 'valid_admin', 'api_verify': true })
-            .expect(200)
+            .expect(200);
     });
 
     it('GET /admin/hatfield has correct response (success)', () => {
         return agent
             .get('/admin/hatfield')
             .expect(200)
-            .expect(/true/)
+            .expect(/true/);
     });
 
     it('POST /admin/hatfield/c with invalid event details fails (0 total spaces)', () => {
@@ -438,7 +438,7 @@ describe('Test college admin events', () => {
             .expect(200)
             .expect(function (res) {
                 var body = JSON.parse(res.text);
-                if (body.number_events.length === 0) { throw new Error('no event') }
+                if (body.number_events.length === 0) { throw new Error('no event'); }
             });
     });
 
@@ -486,15 +486,15 @@ describe('Test college admin events', () => {
             .expect(200)
             .expect(function (res) {
                 var body = JSON.parse(res.text);
-                if (Object.keys(body).length !== 0) { throw new Error('user signed up to new event') }
+                if (Object.keys(body).length !== 0) { throw new Error('user signed up to new event'); }
             });
     });
 
     it('Sign up to event with POST /college/hatfield/4', () => {
         return agent
             .post('/college/hatfield/4')
-            .expect(200)
-    })
+            .expect(200);
+    });
 
     it('GET /admin/hatfield/u/4 has a user signed up', () => {
         return agent
@@ -502,7 +502,7 @@ describe('Test college admin events', () => {
             .expect(200)
             .expect(function (res) {
                 var body = JSON.parse(res.text);
-                if (Object.keys(body).length === 0) { throw new Error('no user signed up to event') }
+                if (Object.keys(body).length === 0) { throw new Error('no user signed up to event'); }
             });
     });
 
@@ -512,8 +512,8 @@ describe('Test college admin events', () => {
             .expect(200)
             .expect(function (res) {
                 var body = JSON.parse(res.text);
-                if (Object.keys(body)[0] !== 'admin@gmail.com') { throw new Error('admin email not present as key') };
-                if (body['admin@gmail.com'] !== 'Admin Name') { throw new Error('admin name not correct') };
+                if (Object.keys(body)[0] !== 'admin@gmail.com') { throw new Error('admin email not present as key'); }
+                if (body['admin@gmail.com'] !== 'Admin Name') { throw new Error('admin name not correct'); }
             });
     });
 
@@ -530,7 +530,7 @@ describe('Test college admin events', () => {
             .expect(200)
             .expect(function (res) {
                 var body = JSON.parse(res.text);
-                if (body.number_events.length !== 0) { throw new Error('event present') }
+                if (body.number_events.length !== 0) { throw new Error('event present'); }
             });
     });
 
