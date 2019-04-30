@@ -108,8 +108,6 @@ async function genFullTable(college) {
     catch (e) {
         throw (e);
     }
-
-    document.getElementById('content_above').innerHTML = '<div class="form-group"><input type="text" onkeyup="tableFilter()" class="form-control my-form-search" id="tableSearch" placeholder="search"></div>';
     lastPageRequestCollegeEvents = body.number_events;
     await genTable(college, body.number_events);
 }
@@ -278,6 +276,7 @@ async function genAdminTable(college) {
 
 async function genTable(college, number_events) {
     try {
+        document.getElementById('content_above').innerHTML = '<div class="form-group"><input type="text" onkeyup="tableFilter()" class="form-control my-form-search" id="tableSearch" placeholder="search"></div>';
         var admin = await fetch('/admin/' + lastPageRequestCollege);
         admin = await admin.text();
         if (admin === 'true') {
