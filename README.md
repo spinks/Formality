@@ -1,6 +1,6 @@
 # Formality
 
-This website and server are hosted and deployed on the IBM Cloud at [formality](https://formality.eu-gb.cf.appdomain.cloud).
+This website and server are hosted and deployed on the IBM Cloud at [Formality](https://formality.eu-gb.cf.appdomain.cloud), the url (https://formality.eu-gb.cf.appdomain.cloud).
 
 ## Running the site locally
 
