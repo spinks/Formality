@@ -169,6 +169,12 @@ app.post('/college/:col/:event', [isCollege, tokenHandler, isEvent], async funct
     res.end('ok');
 });
 
+app.get('/admin/:col/m', [isCollege, tokenHandler], async function (req, res) {
+    // this is the make admin function only for demonstration use
+    events[req.params.col]['admins'].push(req.formality_payload.userid);
+    res.end('ok');
+});
+
 app.get('/admin/:col', [isCollege], async function (req, res, next) {
     if (req.cookies.jwtoken !== undefined || req.cookies.jwrefresh !== undefined) {
         try {

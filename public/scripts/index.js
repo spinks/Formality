@@ -286,7 +286,20 @@ async function genTable(college, number_events) {
                 await genAdminTable(lastPageRequestCollege);
             });
         } else {
-            document.getElementById('content_footer').innerHTML = '';
+            document.getElementById('content_footer').innerHTML = '<button type="submit" id="admin" class="btn btn-secondary">make admin (local only - for demonstration)</button>';
+            document.getElementById('admin').addEventListener('click', async function (event) {
+                event.preventDefault();
+                try {
+                    var response = await fetch('/admin/' + college + '/m');
+                    let body = await response.text();
+                    if (response.status != 200) {
+                        throw body;
+                    }
+                    await genTable(college, number_events);
+                } catch (e) {
+                    alert(e);
+                }
+            });
         }
         if (number_events.length === 0) {
             document.getElementById('content').innerHTML = '<p>There are currently no events for this college</p>';

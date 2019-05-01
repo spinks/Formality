@@ -8,11 +8,11 @@ Install modules with `npm install`, run with `npm start`. Server will be availab
 
 ## Usage
 
-The premise is that the website allows signed in users to sign up for, or cancel their attendance at events. After signing in with Google you can then perform those two actions on the events for any college.
+The premise is that the website allows signed in users to sign up for, or cancel their attendance at events. After signing in you can then perform those two actions on the events for any college. For sign-in handling the website incorperates the Google Authenitcation API, after authenticating with their endpoint an access and refresh token are returned to the client as cookies. The access token authenitcates future actions until it expires at which point a refresh token can be used to generate a new access token.
 
 If a user is an administrator for a college they are able to access an admin page which allows for editing of existing events, creation of new events, deletion of events, or fetching the list of users who are signed up to one of their events.
 
-For demonstration purposes only, on the local distribution of the server there is a `make admin` button on a colleges' page, this will add your `userid` to the list of admins for that college, you will then be able to access the admin page and test the add, edit and delete interactions; as-well as fetching attending users.
+For demonstration purposes only, on the local distribution of the server there is a `make admin` button on a colleges' page, this will add your `userid` to the list of admins for that college, you will then be able to access the admin page and test the add, edit and delete interactions; as-well as fetching attending users. This obviously is not present in development, as you can see on the hosted version of the site.
 
 # API
 In all api references the resource url root (`https://formality.eu-gb.cf.appdomain.cloud`) can be replaced with `htpp://localhost:8080` for local testing

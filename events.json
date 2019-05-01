@@ -7,14 +7,14 @@
         "array": {
             "1": {
                 "event": "Tuesday Formal",
-                "date": "19/6",
+                "date": "7/5",
                 "space": 6,
                 "total_space": 80,
                 "users": {}
             },
             "2": {
                 "event": "Friday Formal",
-                "date": "22/6",
+                "date": "10/5",
                 "space": 21,
                 "total_space": 90,
                 "users": {}
@@ -44,17 +44,41 @@
     "st_cuthberts": {
         "college_name": "St Cuthbert's",
         "admins": [],
-        "array": {}
+        "array": {
+            "1": {
+                "event": "Tuesday Formal",
+                "date": "7/5",
+                "space": 50,
+                "total_space": 75,
+                "users": {}
+            }
+        }
     },
     "st_marys": {
         "college_name": "St Mary's",
         "admins": [],
-        "array": {}
+        "array": {
+            "1": {
+                "event": "Friday Formal",
+                "date": "10/5",
+                "space": 21,
+                "total_space": 90,
+                "users": {}
+            }
+        }
     },
     "st_chads": {
         "college_name": "St Chad's",
         "admins": [],
-        "array": {}
+        "array": {
+            "1": {
+                "event": "Wednesday Formal",
+                "date": "8/5",
+                "space": 80,
+                "total_space": 80,
+                "users": {}
+            }
+        }
     },
     "st_johns": {
         "college_name": "St John's",
@@ -62,19 +86,12 @@
         "array": {
             "1": {
                 "event": "Wednesday Formal",
-                "date": "19/6",
+                "date": "8/5",
                 "space": 45,
                 "total_space": 90,
                 "users": {}
             },
             "2": {
-                "event": "Friday Formal",
-                "date": "22/6",
-                "space": 23,
-                "total_space": 90,
-                "users": {}
-            },
-            "3": {
                 "event": "Summer Ball",
                 "date": "12/12",
                 "space": 89,
@@ -86,51 +103,131 @@
     "st_aidans": {
         "college_name": "St Aidan's",
         "admins": [],
-        "array": {}
+        "array": {
+            "1": {
+                "event": "Monday Formal",
+                "date": "6/5",
+                "space": 90,
+                "total_space": 120,
+                "users": {}
+            }
+        }
     },
     "grey": {
         "college_name": "Grey",
         "admins": [],
-        "array": {}
+        "array": {
+            "1": {
+                "event": "Tuesday Formal",
+                "date": "7/5",
+                "space": 80,
+                "total_space": 90,
+                "users": {}
+            }
+        }
     },
     "ustinov": {
         "college_name": "Ustinov",
         "admins": [],
-        "array": {}
+        "array": {
+            "1": {
+                "event": "Thursday Formal",
+                "date": "9/5",
+                "space": 68,
+                "total_space": 100,
+                "users": {}
+            }
+        }
     },
     "van_mildert": {
         "college_name": "Van Mildert",
         "admins": [],
-        "array": {}
+        "array": {
+            "1": {
+                "event": "Wednesday Formal",
+                "date": "8/5",
+                "space": 60,
+                "total_space": 120,
+                "users": {}
+            }
+        }
     },
     "trevelyan": {
         "college_name": "Trevelyan",
         "admins": [],
-        "array": {}
+        "array": {
+            "1": {
+                "event": "Monday Formal",
+                "date": "6/5",
+                "space": 70,
+                "total_space": 90,
+                "users": {}
+            }
+        }
     },
     "collingwood": {
         "college_name": "Collingwood",
         "admins": [],
-        "array": {}
+        "array": {
+            "1": {
+                "event": "Friday Formal",
+                "date": "10/5",
+                "space": 30,
+                "total_space": 150,
+                "users": {}
+            }
+        }
     },
     "st_hild_st_bede": {
         "college_name": "St Hild and St Bede",
         "admins": [],
-        "array": {}
+        "array": {
+            "1": {
+                "event": "Tuesday Formal",
+                "date": "7/5",
+                "space": 56,
+                "total_space": 70,
+                "users": {}
+            }
+        }
     },
     "stephenson": {
         "college_name": "Stephenson",
         "admins": [],
-        "array": {}
+        "array": {
+            "1": {
+                "event": "Friday Formal",
+                "date": "10/5",
+                "space": 34,
+                "total_space": 90,
+                "users": {}
+            }
+        }
     },
     "john_snow": {
         "college_name": "John Snow",
         "admins": [],
-        "array": {}
+        "array": {
+            "1": {
+                "event": "Monday Formal",
+                "date": "6/5",
+                "space": 34,
+                "total_space": 75,
+                "users": {}
+            }
+        }
     },
     "josephine_butler": {
         "college_name": "Josephine Butler",
         "admins": [],
-        "array": {}
+        "array": {
+            "1": {
+                "event": "Friday Formal",
+                "date": "10/5",
+                "space": 87,
+                "total_space": 120,
+                "users": {}
+            }
+        }
     }
 }
