@@ -59,10 +59,10 @@
         "admins": [],
         "array": {
             "1": {
-                "event": "Friday Formal",
-                "date": "10/5",
-                "space": 21,
-                "total_space": 90,
+                "event": "Midsummer Ball",
+                "date": "19/6",
+                "space": 600,
+                "total_space": 600,
                 "users": {}
             }
         }
@@ -222,10 +222,10 @@
         "admins": [],
         "array": {
             "1": {
-                "event": "Friday Formal",
-                "date": "10/5",
-                "space": 87,
-                "total_space": 120,
+                "event": "Summer Ball",
+                "date": "13/6",
+                "space": 500,
+                "total_space": 500,
                 "users": {}
             }
         }
